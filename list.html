@@ -3,38 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VBS Admin - Secure Explorer List</title>
+    <title>VBS Admin - Explorer List</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
+        body { font-family: sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
         .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 650px; }
-        h2 { color: #2c3e50; margin-bottom: 20px; text-align: center; }
-        input[type="password"] { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s; }
+        h2 { color: #2c3e50; text-align: center; }
+        input[type="password"], input[type="text"] { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
         #loginBtn { background-color: #3498db; color: white; }
-        #loginBtn:hover { background-color: #2980b9; }
         .logout-btn { background-color: #e74c3c; color: white; width: auto; padding: 8px 15px; }
         ul { list-style: none; padding: 0; margin-top: 20px; }
         li { padding: 15px; border-bottom: 1px solid #edf2f7; display: flex; justify-content: space-between; align-items: center; }
-        .explorer-info { display: flex; flex-direction: column; gap: 4px; }
-        .explorer-name { font-weight: bold; color: #2d3748; font-size: 1.1em; }
-        .explorer-details { font-size: 0.9em; color: #718096; line-height: 1.4; }
-        .delete-btn { background-color: #feb2b2; color: #c53030; width: auto; padding: 6px 12px; font-size: 0.85em; }
-        .delete-btn:hover { background-color: #fc8181; }
-        .error-text { color: #e53e3e; font-size: 14px; margin-top: 10px; text-align: center; }
-        #loading { text-align: center; color: #a0aec0; padding: 20px; }
+        .explorer-name { font-weight: bold; color: #2d3748; }
+        .explorer-details { font-size: 0.9em; color: #718096; }
+        .delete-btn { background-color: #feb2b2; color: #c53030; width: auto; padding: 6px 12px; }
+        .error-text { color: #e53e3e; font-size: 14px; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div id="loginOverlay" class="container">
         <h2>🔐 Admin Access</h2>
-        <p style="text-align: center; color: #4a5568;">Enter the coordinator password to access the database.</p>
+        <p style="text-align: center;">Enter the coordinator password to view explorers.</p>
         <input type="password" id="passInput" placeholder="Password">
+        
+        <div style="margin-bottom: 15px; font-size: 14px; color: #718096;">
+            <input type="checkbox" id="showPass"> Show Password
+        </div>
+
         <button id="loginBtn">Unlock Explorer List</button>
         <p id="err" class="error-text"></p>
         <div style="text-align: center; margin-top: 20px;">
-            <a href="index.html" style="color: #a0aec0; text-decoration: none; font-size: 0.9em;">← Return to Registration</a>
+            <a href="index.html" style="color: #a0aec0; text-decoration: none; font-size: 0.9em;">← Back to Registration</a>
         </div>
     </div>
 
@@ -43,7 +44,7 @@
             <h2 style="margin: 0;">📋 Explorers</h2>
             <button id="logoutBtn" class="logout-btn">Secure Sign Out</button>
         </div>
-        <div id="loading">Syncing with Galactic Database...</div>
+        <div id="loading" style="text-align: center; padding: 20px; color: #a0aec0;">Syncing Database...</div>
         <ul id="explorerList"></ul>
     </div>
 
