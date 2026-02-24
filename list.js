@@ -1,8 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+// Your verified Firebase Config
 const firebaseConfig = {
-    // PASTE YOUR REAL CONFIG FROM APP.JS HERE
     apiKey: "AIzaSyB9wvQ525wCsxZmIZmfzj6Z5VjF2aSUu_g",
     authDomain: "registervbs-83306.firebaseapp.com",
     projectId: "registervbs-83306",
@@ -13,36 +13,51 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const listElement = document.getElementById('explorerList');
-const loadingElement = document.getElementById('loading');
 
-async function getRegistrations() {
+const loginOverlay = document.getElementById('loginOverlay');
+const adminContent = document.getElementById('adminContent');
+const loginBtn = document.getElementById('loginBtn');
+const passInput = document.getElementById('passInput');
+const explorerList = document.getElementById('explorerList');
+
+// The Lock Logic
+loginBtn.onclick = () => {
+    // CURRENT PASSWORD: VBS2026
+    if (passInput.value === "VBS2026") {
+        loginOverlay.style.display = 'none';
+        adminContent.style.display = 'block';
+        fetchExplorers();
+    } else {
+        document.getElementById('err').textContent = "Incorrect password. Please try again.";
+    }
+};
+
+// The Data Fetching Logic
+async function fetchExplorers() {
     try {
         const querySnapshot = await getDocs(collection(db, "registrations"));
-        loadingElement.style.display = 'none';
+        document.getElementById('loading').style.display = 'none';
         
+        if (querySnapshot.empty) {
+            explorerList.innerHTML = "<li>No explorers registered yet.</li>";
+            return;
+        }
+
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             const li = document.createElement('li');
-            li.style.margin = "10px 0";
-            
-            // Create a link for each name
-            const a = document.createElement('a');
-            a.href = `#`; // You can link to a detail page like `details.html?id=${doc.id}`
-            a.textContent = data.childName;
-            a.style.textDecoration = "none";
-            a.style.color = "#3498db";
-            a.style.fontWeight = "bold";
-            
-            a.onclick = () => alert(`Explorer: ${data.childName}\nGrade: ${data.grade}\nParent: ${data.email}`);
-
-            li.appendChild(a);
-            listElement.appendChild(li);
+            li.innerHTML = `
+                <span class="explorer-name">${data.childName}</span>
+                <span class="explorer-details">
+                    Age: ${data.age} | Grade: ${data.grade}<br>
+                    Parent: ${data.email} | Phone: ${data.phone}<br>
+                    Allergies: ${data.allergies || 'None'}
+                </span>
+            `;
+            explorerList.appendChild(li);
         });
     } catch (error) {
-        console.error("Error fetching documents: ", error);
-        loadingElement.textContent = "Error loading list. Check console.";
+        console.error("Error fetching explorers:", error);
+        document.getElementById('loading').textContent = "Error: Access Denied. Check Firestore Rules.";
     }
 }
-
-getRegistrations();
