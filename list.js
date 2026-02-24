@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// YOUR VERIFIED CONFIG
+// VERIFIED FIREBASE CONFIGURATION
 const firebaseConfig = {
     apiKey: "AIzaSyB9wvQ525wCsxZmIZmfzj6Z5VjF2aSUu_g",
     authDomain: "registervbs-83306.firebaseapp.com",
@@ -12,11 +12,12 @@ const firebaseConfig = {
     appId: "1:462529063270:web:40c1333dc7c450345300a7"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// AUTH STATE MONITOR
+// Monitor Authentication State
 onAuthStateChanged(auth, (user) => {
     if (user) {
         document.getElementById('loginOverlay').style.display = 'none';
@@ -28,56 +29,60 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// SHOW PASSWORD TOGGLE
+// Show Password Toggle
 document.getElementById('showPass').onclick = () => {
-    document.getElementById('passInput').type = document.getElementById('showPass').checked ? "text" : "password";
+    const passInput = document.getElementById('passInput');
+    passInput.type = document.getElementById('showPass').checked ? "text" : "password";
 };
 
-// LOGIN LOGIC
+// Login Functionality
 document.getElementById('loginBtn').onclick = async () => {
     const email = "admin@yourchurch.com"; //
     const password = document.getElementById('passInput').value;
     try {
         await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-        // This will now show the REAL error reason on screen
+        // Displays the actual error from Firebase on your screen
         document.getElementById('err').textContent = "Error: " + error.message;
     }
 };
 
-// LOGOUT LOGIC
+// Sign Out Functionality
 document.getElementById('logoutBtn').onclick = async () => {
     await signOut(auth);
     location.reload();
 };
 
-// DATA FETCHING
+// Fetch and Display Registrations
 async function fetchExplorers() {
     const explorerList = document.getElementById('explorerList');
     try {
         const querySnapshot = await getDocs(collection(db, "registrations"));
         document.getElementById('loading').style.display = 'none';
         explorerList.innerHTML = ""; 
+        
         querySnapshot.forEach((docSnap) => {
             const data = docSnap.data();
             const id = docSnap.id;
             const li = document.createElement('li');
+            li.style.cssText = "display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0;";
             li.innerHTML = `
-                <div style="margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:10px; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <strong>${data.childName}</strong> (Grade: ${data.grade})<br>
-                        Parent: ${data.email} | Phone: ${data.phone}
-                    </div>
-                    <button onclick="window.deleteEntry('${id}')" style="background:#e74c3c; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:4px;">Delete</button>
+                <div>
+                    <strong>${data.childName}</strong> (Grade: ${data.grade})<br>
+                    Parent: ${data.email} | Phone: ${data.phone}
                 </div>
+                <button onclick="window.deleteEntry('${id}')" style="background:#e74c3c; color:white; border:none; padding:8px; cursor:pointer; border-radius:4px;">Delete</button>
             `;
             explorerList.appendChild(li);
         });
-    } catch (e) { console.error(e); }
+    } catch (e) {
+        console.error("Fetch Error:", e);
+    }
 }
 
+// Global Delete Function
 window.deleteEntry = async (id) => {
-    if (confirm("Are you sure you want to delete this explorer?")) {
+    if (confirm("Permanently delete this explorer?")) {
         await deleteDoc(doc(db, "registrations", id));
         location.reload();
     }
