@@ -40,7 +40,7 @@ document.getElementById('loginBtn').onclick = async () => {
     try {
         await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-        // This will now show the REAL error reason
+        // This will now show the REAL error reason on screen
         document.getElementById('err').textContent = "Error: " + error.message;
     }
 };
@@ -63,10 +63,12 @@ async function fetchExplorers() {
             const id = docSnap.id;
             const li = document.createElement('li');
             li.innerHTML = `
-                <div style="margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:10px;">
-                    <strong>${data.childName}</strong> (Grade: ${data.grade})<br>
-                    Parent: ${data.email} | Phone: ${data.phone}<br>
-                    <button onclick="window.deleteEntry('${id}')" style="background:#e74c3c; color:white; border:none; padding:5px; cursor:pointer; margin-top:5px;">Delete</button>
+                <div style="margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:10px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>${data.childName}</strong> (Grade: ${data.grade})<br>
+                        Parent: ${data.email} | Phone: ${data.phone}
+                    </div>
+                    <button onclick="window.deleteEntry('${id}')" style="background:#e74c3c; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:4px;">Delete</button>
                 </div>
             `;
             explorerList.appendChild(li);
@@ -75,7 +77,7 @@ async function fetchExplorers() {
 }
 
 window.deleteEntry = async (id) => {
-    if (confirm("Delete this explorer?")) {
+    if (confirm("Are you sure you want to delete this explorer?")) {
         await deleteDoc(doc(db, "registrations", id));
         location.reload();
     }
