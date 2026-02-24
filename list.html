@@ -3,19 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VBS Registration List</title>
+    <title>VBS Admin - Explorer List</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Basic styling to ensure the layout looks professional */
+        body { font-family: sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        input[type="password"] { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #2980b9; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        .error-text { color: #e74c3c; font-size: 14px; margin-top: 10px; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h2>📋 Registered Explorers</h2>
-        <div id="loading">Loading registrations...</div>
-        <ul id="explorerList" style="list-style: none; padding: 0;">
-            </ul>
+
+    <div id="loginOverlay" class="container" style="text-align: center;">
+        <h2>🔐 Admin Access</h2>
+        <p>Please enter the VBS coordinator password.</p>
+        <input type="password" id="passInput" placeholder="Password">
+        <button id="loginBtn">Unlock Explorer List</button>
+        <p id="err" class="error-text"></p>
         <br>
-        <a href="index.html">Back to Registration</a>
+        <a href="index.html" style="text-decoration: none; font-size: 14px; color: #7f8c8d;">← Back to Registration</a>
+    </div>
+
+    <div id="adminContent" class="container" style="display: none;">
+        <h2>📋 Registered Explorers</h2>
+        <div id="loading">Connecting to Secure Database...</div>
+        <ul id="explorerList"></ul>
+        <hr>
+        <button onclick="location.reload()" style="background-color: #95a5a6;">Lock & Logout</button>
     </div>
 
     <script type="module" src="list.js"></script>
+
 </body>
 </html>
