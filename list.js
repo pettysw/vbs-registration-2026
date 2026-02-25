@@ -25,7 +25,6 @@ document.getElementById('loginBtn').onclick = () => {
     }
 };
 
-// Show/Hide Password Toggle
 document.getElementById('showPass').onclick = () => {
     document.getElementById('passInput').type = document.getElementById('showPass').checked ? "text" : "password";
 };
@@ -38,22 +37,20 @@ async function fetchExplorers() {
         const querySnapshot = await getDocs(collection(db, "registrations"));
         document.getElementById('loading').style.display = 'none';
         explorerList.innerHTML = ""; 
-        
-        // Show Total Registered Explorers
         countDisplay.textContent = querySnapshot.size;
 
         querySnapshot.forEach((docSnap) => {
             const data = docSnap.data();
             const id = docSnap.id;
             const li = document.createElement('li');
-            
-            // Layout for names on left, button on right
             li.style.cssText = "display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:12px 0;";
             
             li.innerHTML = `
                 <div style="flex-grow: 1; padding-right: 15px;">
                     <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
-                    <span style="font-size: 0.9em; color: #666;">Parent: ${data.email} | Phone: ${data.phone}</span>
+                    <span style="font-size: 0.9em; color: #666;">
+                        Church: ${data.homeChurch || 'None'} | Phone: ${data.phone}
+                    </span>
                 </div>
                 <button onclick="window.deleteEntry('${id}')" 
                         style="background:#e74c3c; color:white; border:none; padding:8px 0; cursor:pointer; border-radius:4px; width: 80px; min-width: 80px; text-align: center; font-weight: bold;">
@@ -67,10 +64,9 @@ async function fetchExplorers() {
     }
 }
 
-// Global Delete Function
 window.deleteEntry = async (id) => {
     if (confirm("Permanently delete this explorer?")) {
         await deleteDoc(doc(db, "registrations", id));
-        fetchExplorers(); // Refresh the list without reloading the page
+        fetchExplorers();
     }
 };
