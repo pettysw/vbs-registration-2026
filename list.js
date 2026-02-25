@@ -25,6 +25,7 @@ document.getElementById('loginBtn').onclick = () => {
     }
 };
 
+// Show/Hide Password Toggle
 document.getElementById('showPass').onclick = () => {
     document.getElementById('passInput').type = document.getElementById('showPass').checked ? "text" : "password";
 };
@@ -38,6 +39,7 @@ async function fetchExplorers() {
         document.getElementById('loading').style.display = 'none';
         explorerList.innerHTML = ""; 
         
+        // Show Total Registered Explorers
         countDisplay.textContent = querySnapshot.size;
 
         querySnapshot.forEach((docSnap) => {
@@ -45,7 +47,7 @@ async function fetchExplorers() {
             const id = docSnap.id;
             const li = document.createElement('li');
             
-            // Set styles for the row to keep items aligned
+            // Layout for names on left, button on right
             li.style.cssText = "display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:12px 0;";
             
             li.innerHTML = `
@@ -65,9 +67,10 @@ async function fetchExplorers() {
     }
 }
 
+// Global Delete Function
 window.deleteEntry = async (id) => {
     if (confirm("Permanently delete this explorer?")) {
         await deleteDoc(doc(db, "registrations", id));
-        fetchExplorers();
+        fetchExplorers(); // Refresh the list without reloading the page
     }
 };
