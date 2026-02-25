@@ -3,49 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VBS Admin - Explorer List</title>
+    <title>VBS 2026 - Explorer Roster</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        body { font-family: sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 650px; }
-        h2 { color: #2c3e50; text-align: center; }
-        input[type="password"], input[type="text"] { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        #loginBtn { background-color: #3498db; color: white; }
-        .logout-btn { background-color: #e74c3c; color: white; width: auto; padding: 8px 15px; }
-        ul { list-style: none; padding: 0; margin-top: 20px; }
-        li { padding: 15px; border-bottom: 1px solid #edf2f7; display: flex; justify-content: space-between; align-items: center; }
-        .explorer-name { font-weight: bold; color: #2d3748; }
-        .explorer-details { font-size: 0.9em; color: #718096; }
-        .delete-btn { background-color: #feb2b2; color: #c53030; width: auto; padding: 6px 12px; }
-        .error-text { color: #e53e3e; font-size: 14px; text-align: center; margin-top: 10px; }
-    </style>
 </head>
 <body>
-
     <div id="loginOverlay" class="container">
-        <h2>🔐 Admin Access</h2>
-        <p style="text-align: center;">Enter the coordinator password to view explorers.</p>
-        <input type="password" id="passInput" placeholder="Password">
-        
-        <div style="margin-bottom: 15px; font-size: 14px; color: #718096;">
-            <input type="checkbox" id="showPass"> Show Password
+        <div style="text-align: center; margin-bottom: 20px;">
+            <span style="font-size: 50px;">🔐</span>
+            <h2>Admin Access</h2>
+            <p>Enter the coordinator password to view explorers.</p>
         </div>
-
-        <button id="loginBtn">Unlock Explorer List</button>
-        <p id="err" class="error-text"></p>
+        
+        <div class="form-group">
+            <input type="password" id="passInput" placeholder="Password" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+            <div style="margin-bottom: 15px; font-size: 14px; color: #666;">
+                <input type="checkbox" id="showPass"> Show Password
+            </div>
+        </div>
+        
+        <button id="loginBtn" style="width: 100%; padding: 12px; background-color: #3498db; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
+            Unlock Explorer List
+        </button>
+        
+        <p id="err" style="color: #e74c3c; text-align: center; margin-top: 15px; font-weight: bold;"></p>
+        
         <div style="text-align: center; margin-top: 20px;">
-            <a href="index.html" style="color: #a0aec0; text-decoration: none; font-size: 0.9em;">← Back to Registration</a>
+            <a href="index.html" style="color: #7f8c8d; text-decoration: none;">← Back to Registration</a>
         </div>
     </div>
 
-    <div id="adminContent" class="container" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f7fafc; padding-bottom: 15px;">
-            <h2 style="margin: 0;">📋 Explorers</h2>
-            <button id="logoutBtn" class="logout-btn">Secure Sign Out</button>
+    <div id="adminContent" class="container" style="display:none; max-width: 800px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #3498db; margin-bottom: 20px; padding-bottom: 10px;">
+            <h2 style="margin: 0;">Registered Explorers</h2>
+            <div style="background: #3498db; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold;">
+                Total: <span id="totalCount">0</span>
+            </div>
         </div>
-        <div id="loading" style="text-align: center; padding: 20px; color: #a0aec0;">Syncing Database...</div>
-        <ul id="explorerList"></ul>
+
+        <p id="loading" style="text-align: center; color: #666;">Searching the database...</p>
+        
+        <ul id="explorerList" style="list-style: none; padding: 0;">
+            </ul>
+
+        <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; text-align: center;">
+            <button onclick="location.reload()" style="background: none; border: 1px solid #ccc; padding: 8px 15px; border-radius: 4px; cursor: pointer; color: #666;">
+                Logout / Refresh List
+            </button>
+        </div>
     </div>
 
     <script type="module" src="list.js"></script>
