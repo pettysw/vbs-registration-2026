@@ -13,7 +13,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Ensures the button is ready on Mac browsers
 document.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.getElementById('loginBtn');
     if (loginBtn) {
@@ -56,7 +55,6 @@ async function fetchExplorers() {
             const li = document.createElement('li');
             li.style.cssText = "display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:12px 0;";
             
-            // Reordered template: Parent Email before Home Church
             li.innerHTML = `
                 <div style="flex-grow: 1; padding-right: 15px;">
                     <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
@@ -86,4 +84,3 @@ window.deleteEntry = async (id) => {
         fetchExplorers();
     }
 };
-
