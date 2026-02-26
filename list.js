@@ -86,3 +86,4 @@ window.deleteEntry = async (id) => {
         fetchExplorers();
     }
 };
+
