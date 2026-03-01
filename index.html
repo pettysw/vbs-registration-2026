@@ -7,28 +7,33 @@
     <link rel="icon" type="image/png" href="ico.png">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Fancy Grade Dropdown Styling */
+        /* Shortened Grade layout: Label and Dropdown on one line */
+        .grade-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
         select#grade {
-            width: 100%;
-            padding: 12px;
+            width: 160px; /* Shortened width */
+            padding: 8px;
             border: 2px solid #3498db;
             border-radius: 8px;
-            background-color: #ffffff;
-            font-size: 16px;
             font-weight: bold;
             color: #2c3e50;
             cursor: pointer;
-            transition: border-color 0.3s ease;
-            appearance: none; /* Removes default arrow */
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233498db' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233498db' stroke-width='3'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 16px;
+            background-position: right 10px center;
+            background-size: 14px;
         }
-        select#grade:focus {
-            outline: none;
-            border-color: #2ecc71;
-            box-shadow: 0 0 8px rgba(46, 204, 113, 0.2);
+        /* Vertical alignment for Medical Info */
+        .medical-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -38,7 +43,6 @@
             <img src="ico.png" alt="VBS Icon" style="width: 150px; height: auto; margin-bottom: 20px;">
         </div>
         <h1>VBS 2026 Registration</h1>
-        <p>Register your child for an exciting week of exploration!</p>
         
         <form id="registrationForm">
             <div class="form-group">
@@ -49,10 +53,11 @@
                 <label for="childLastName">Child's Last Name</label>
                 <input type="text" id="childLastName" required>
             </div>
-            <div class="form-group">
-                <label for="grade">Grade (Entering in Fall)</label>
+
+            <div class="grade-row">
+                <label for="grade" style="margin:0; font-weight:bold;">Grade (Entering in Fall):</label>
                 <select id="grade" required>
-                    <option value="" disabled selected>Choose a Grade...</option>
+                    <option value="" disabled selected>Select...</option>
                     <option value="K">Kindergarten</option>
                     <option value="1">1st Grade</option>
                     <option value="2">2nd Grade</option>
@@ -78,10 +83,12 @@
                 <label for="homeChurch">Home Church (if any)</label>
                 <input type="text" id="homeChurch" placeholder="Enter church name or 'None'">
             </div>
-            <div class="form-group">
-                <label for="medicalInfo">Allergies/Medical Conditions Special notes</label>
+
+            <div class="medical-group">
+                <label for="medicalInfo" style="font-weight:bold;">Allergies/Medical Conditions Special notes</label>
                 <textarea id="medicalInfo" rows="3" placeholder="Enter any allergies or special needs..."></textarea>
             </div>
+
             <div class="form-group">
                 <label for="pickupNames">Name(s) of person(s) who may pick up this child from VBS</label>
                 <input type="text" id="pickupNames" placeholder="Authorized pickup names" required>
