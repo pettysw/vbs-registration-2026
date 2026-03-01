@@ -39,11 +39,18 @@ document.getElementById('registrationForm').onsubmit = async (e) => {
             firstName: document.getElementById('childFirstName').value,
             lastName: document.getElementById('childLastName').value,
             grade: document.getElementById('grade').value,
-            medicalInfo: document.getElementById('medicalInfo').value,
-            pickupNames: document.getElementById('pickupNames').value,
             parentName: document.getElementById('parentName').value,
             phone: document.getElementById('parentPhone').value,
             email: document.getElementById('parentEmail').value,
             homeChurch: document.getElementById('homeChurch').value,
+            medicalInfo: document.getElementById('medicalInfo').value,
+            pickupNames: document.getElementById('pickupNames').value,
             timestamp: new Date()
         });
+        window.location.href = "success.html";
+    } catch (error) {
+        alert("Error saving: " + error.message);
+        btn.disabled = false;
+        btn.textContent = "Register Explorer";
+    }
+};
