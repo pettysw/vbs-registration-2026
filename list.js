@@ -15,7 +15,6 @@ const db = getFirestore(app);
 let allExplorers = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Show/Hide Password Logic
     const passInput = document.getElementById('passInput');
     const toggleBtn = document.getElementById('togglePass');
     if (toggleBtn && passInput) {
@@ -57,7 +56,7 @@ async function fetchExplorers() {
                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:20px;">
                     <h2 style="white-space: nowrap;">VBS 2026 Roster</h2>
                     <button id="downloadCSV" style="width: auto; background: #27ae60; margin-left: 20px;">Download Roster</button>
-                    <span style="font-weight:bold;">Total: ${allExplorers.length}</span>
+                    <span style="font-weight:bold;">Total Children: ${allExplorers.length}</span>
                 </div>
             `;
             document.getElementById('downloadCSV').onclick = downloadCSV;
@@ -72,26 +71,29 @@ function renderList(list) {
     explorerList.innerHTML = "";
     list.forEach(data => {
         const li = document.createElement('li');
-        li.style.cssText = "border-bottom:1px solid #eee; padding:15px 0;";
+        li.style.cssText = "border-bottom:1px solid #eee; padding:15px 0; list-style:none;";
+        // Explicitly rendering all fields to ensure they show on screen
         li.innerHTML = `
             <div>
                 <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
-                <span style="font-size: 0.9em; color: #666;">
-                    Parent: ${data.parentName}<br>
-                    Pick-up: ${data.pickupNames || 'N/A'}<br>
-                    Medical: ${data.medicalNotes || 'N/A'}
+                <span style="font-size: 0.9em; color: #444;">
+                    <strong>Parent:</strong> ${data.parentName}<br>
+                    <strong>Phone:</strong> ${data.phone} | <strong>Email:</strong> ${data.email}<br>
+                    <strong>Church:</strong> ${data.homeChurch || 'None'}<br>
+                    <strong>Pick-up Auth:</strong> ${data.pickupNames || 'Not Provided'}<br>
+                    <strong>Medical/Allergies:</strong> ${data.medicalNotes || 'None'}
                 </span>
             </div>
-            <button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 5px 10px; font-size: 12px; margin-top: 10px;">Delete</button>
+            <button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 5px 10px; font-size: 12px; margin-top: 10px; cursor:pointer;">Delete</button>
         `;
         explorerList.appendChild(li);
     });
 }
 
 function downloadCSV() {
-    let csvContent = "data:text/csv;charset=utf-8,Child,Grade,Parent,Phone,Email,PickUp,Medical\n";
+    let csvContent = "data:text/csv;charset=utf-8,Child,Grade,Parent,Phone,Email,Church,PickUp,Medical\n";
     allExplorers.forEach(d => {
-        csvContent += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.pickupNames}","${d.medicalNotes}"\n`;
+        csvContent += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.homeChurch}","${d.pickupNames}","${d.medicalNotes}"\n`;
     });
     const link = document.createElement("a");
     link.setAttribute("href", encodeURI(csvContent));
@@ -101,7 +103,7 @@ function downloadCSV() {
 }
 
 window.deleteEntry = async (id) => {
-    if (confirm("Delete this entry?")) {
+    if (confirm("Delete this child's record?")) {
         await deleteDoc(doc(db, "registrations", id));
         fetchExplorers();
     }
