@@ -18,9 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const passInput = document.getElementById('passInput');
     const toggleBtn = document.getElementById('togglePass');
     
-    // --- FIXED SHOW PASSWORD LOGIC ---
+    // Fixed Show Password Logic for PC
     if (toggleBtn && passInput) {
-        toggleBtn.onclick = () => {
+        toggleBtn.onclick = (e) => {
+            e.preventDefault();
             const isPassword = passInput.type === 'password';
             passInput.type = isPassword ? 'text' : 'password';
             toggleBtn.textContent = isPassword ? 'Hide' : 'Show';
@@ -41,7 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     errDiv.textContent = "Incorrect Password.";
                 }
-            } catch (e) { errDiv.textContent = "Access Denied."; }
+            } catch (e) { 
+                errDiv.textContent = "Access Denied. Check Firestore Rules.";
+            }
         });
     }
 });
@@ -54,6 +57,7 @@ async function fetchChildren() {
         allChildren = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
         if (csvContainer) {
+            // Layout ensures header and total count stay on one line
             csvContainer.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:20px;">
                     <h2 style="white-space: nowrap;">VBS 2026 Roster</h2>
@@ -74,16 +78,14 @@ function renderList(list) {
     list.forEach(data => {
         const li = document.createElement('li');
         li.style.cssText = "border-bottom:1px solid #eee; padding:15px 0; list-style:none;";
-        // Explicitly rendering all fields
         li.innerHTML = `
             <div>
                 <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
                 <span style="font-size: 0.9em; color: #444;">
                     <strong>Parent:</strong> ${data.parentName}<br>
                     <strong>Phone:</strong> ${data.phone} | <strong>Email:</strong> ${data.email}<br>
-                    <strong>Church:</strong> ${data.homeChurch || 'None'}<br>
-                    <strong>Pick-up Auth:</strong> ${data.pickupNames || 'Not Provided'}<br>
-                    <strong>Medical/Allergies:</strong> ${data.medicalNotes || 'None'}
+                    <strong>Pick-up:</strong> ${data.pickupNames || 'N/A'}<br>
+                    <strong>Medical:</strong> ${data.medicalNotes || 'N/A'}
                 </span>
             </div>
             <button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 5px 10px; font-size: 12px; margin-top: 10px; cursor:pointer;">Delete</button>
