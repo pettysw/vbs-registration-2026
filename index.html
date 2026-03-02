@@ -6,46 +6,22 @@
     <title>VBS 2026 Registration</title>
     <link rel="icon" type="image/png" href="ico.png">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .grade-row { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-        select#grade { 
-            width: 160px; padding: 8px; border: 2px solid #3498db; border-radius: 8px; 
-            font-weight: bold; appearance: none; 
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233498db' stroke-width='3'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat; background-position: right 10px center; background-size: 14px;
-        }
-        .vertical-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 20px; }
-        .vertical-group label { font-weight: bold; }
-    </style>
 </head>
 <body>
     <div class="container">
         <div style="text-align: center;">
-            <img src="ico.png" alt="VBS Icon" style="width: 150px; height: auto; margin-bottom: 20px;">
+            <img src="ico.png" alt="VBS Icon" style="width: 100px; height: auto;">
         </div>
-        <h1>VBS 2026 Registration</h1>
+        <h1 style="text-align: center;">VBS 2026 Registration</h1>
         <form id="registrationForm">
-            <div class="form-group"><label>First Name</label><input type="text" id="childFirstName" required></div>
-            <div class="form-group"><label>Last Name</label><input type="text" id="childLastName" required></div>
-            <div class="grade-row">
-                <label>Grade (Entering Fall):</label>
-                <select id="grade" required>
-                    <option value="" disabled selected>Select...</option>
-                    <option value="K">Kindergarten</option>
-                    <option value="1">1st Grade</option>
-                    <option value="2">2nd Grade</option>
-                    <option value="3">3rd Grade</option>
-                    <option value="4">4th Grade</option>
-                    <option value="5">5th Grade</option>
-                </select>
-            </div>
-            <div class="form-group"><label>Parent Name</label><input type="text" id="parentName" required></div>
-            <div class="form-group"><label>Phone</label><input type="tel" id="parentPhone" maxlength="14" placeholder="(555) 555-5555" required></div>
-            <div class="form-group"><label>Email</label><input type="email" id="parentEmail" required></div>
-            <div class="form-group"><label>Home Church</label><input type="text" id="homeChurch"></div>
-            <div class="vertical-group"><label>Medical/Allergies</label><textarea id="medicalInfo" rows="3"></textarea></div>
-            <div class="vertical-group"><label>Authorized Pickup</label><input type="text" id="pickupNames" required></div>
-            <button type="submit" id="submitBtn">Register Child</button>
+            <div class="form-group"><label for="childFirstName">Child's First Name</label><input type="text" id="childFirstName" required></div>
+            <div class="form-group"><label for="childLastName">Child's Last Name</label><input type="text" id="childLastName" required></div>
+            <div class="form-group"><label for="grade">Grade</label><select id="grade" required><option value="">Select Grade</option><option value="K">Kindergarten</option><option value="1">1st Grade</option><option value="2">2nd Grade</option><option value="3">3rd Grade</option><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div>
+            <div class="form-group"><label for="parentName">Parent's Full Name</label><input type="text" id="parentName" required></div>
+            <div class="form-group"><label for="parentPhone">Emergency Contact Phone</label><input type="tel" id="parentPhone" maxlength="14" placeholder="(555) 555-5555" required></div>
+            <div class="form-group"><label for="parentEmail">Parent Email</label><input type="email" id="parentEmail" placeholder="name@example.com" required></div>
+            <div class="form-group"><label for="homeChurch">Home Church</label><input type="text" id="homeChurch" placeholder="Enter church name or 'None'"></div>
+            <button type="submit" id="submitBtn">Register Explorer</button>
         </form>
     </div>
     <script type="module" src="app.js"></script>
