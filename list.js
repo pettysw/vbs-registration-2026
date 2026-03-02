@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const userInput = document.getElementById('passInput').value;
             const errDiv = document.getElementById('err');
             try {
-                // Fetch passcode from config/admin_settings in Firestore
                 const configSnap = await getDoc(doc(db, "config", "admin_settings"));
                 if (configSnap.exists() && userInput === configSnap.data().passcode) { 
                     document.getElementById('loginOverlay').style.display = 'none';
@@ -30,7 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     errDiv.textContent = "Incorrect Password.";
                 }
-            } catch (e) { errDiv.textContent = "Access Denied. Check Firestore Rules."; }
+            } catch (e) { 
+                console.error(e);
+                if(errDiv) errDiv.textContent = "Access Denied."; 
+            }
         });
     }
 });
@@ -39,54 +41,77 @@ async function fetchExplorers() {
     const explorerList = document.getElementById('explorerList');
     const csvContainer = document.getElementById('csvContainer');
     const searchInput = document.getElementById('adminSearch');
+    
     try {
         const querySnapshot = await getDocs(collection(db, "registrations"));
         allExplorers = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        // Inline header layout
-        csvContainer.className = "csv-btn-center";
-        csvContainer.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:20px;">
-                <h2 style="margin:0; white-space: nowrap;">VBS 2026 Roster</h2>
-                <button id="downloadCSV" style="width: auto; background: #27ae60; margin-left: 20px;">Download Roster</button>
-                <span style="font-weight:bold;">Total: ${allExplorers.length}</span>
-            </div>
-        `;
-        document.getElementById('downloadCSV').onclick = downloadCSV;
+        // Safety Check: Fixes the 'null' error from your screenshot
+        if (csvContainer) {
+            csvContainer.className = "csv-btn-center";
+            csvContainer.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:20px;">
+                    <h2 style="margin:0; white-space: nowrap;">VBS 2026 Roster</h2>
+                    <button id="downloadCSV" style="width: auto; background: #27ae60; margin-left: 20px;">Download Roster</button>
+                    <span style="font-weight:bold;">Total: ${allExplorers.length}</span>
+                </div>
+            `;
+            document.getElementById('downloadCSV').onclick = downloadCSV;
+        }
+
         renderList(allExplorers);
-        searchInput.oninput = (e) => {
-            const term = e.target.value.toLowerCase();
-            const filtered = allExplorers.filter(ex => 
-                ex.firstName.toLowerCase().includes(term) || ex.lastName.toLowerCase().includes(term) || ex.parentName.toLowerCase().includes(term)
-            );
-            renderList(filtered);
-        };
+
+        if (searchInput) {
+            searchInput.oninput = (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = allExplorers.filter(ex => 
+                    ex.firstName.toLowerCase().includes(term) || 
+                    ex.lastName.toLowerCase().includes(term) || 
+                    ex.parentName.toLowerCase().includes(term)
+                );
+                renderList(filtered);
+            };
+        }
     } catch (e) { console.error(e); }
 }
 
 function renderList(list) {
     const explorerList = document.getElementById('explorerList');
+    if (!explorerList) return;
     explorerList.innerHTML = "";
     list.forEach(data => {
         const li = document.createElement('li');
         li.style.cssText = "display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:12px 0;";
-        li.innerHTML = `<div><strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br><span style="font-size: 0.9em; color: #666;">Parent: ${data.parentName}<br>Email: ${data.email} | Phone: ${data.phone}<br>Pick-up: ${data.pickupNames || 'N/A'}<br>Medical: ${data.medicalNotes || 'N/A'}</span></div><button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 5px 10px; font-size: 12px; cursor:pointer;">Delete</button>`;
+        li.innerHTML = `
+            <div>
+                <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
+                <span style="font-size: 0.9em; color: #666;">
+                    Parent: ${data.parentName}<br>
+                    Email: ${data.email} | Phone: ${data.phone}<br>
+                    <strong>Pick-up:</strong> ${data.pickupNames || 'N/A'}<br>
+                    <strong>Medical:</strong> ${data.medicalNotes || 'N/A'}
+                </span>
+            </div>
+            <button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 5px 10px; font-size: 12px; cursor:pointer;">Delete</button>
+        `;
         explorerList.appendChild(li);
     });
 }
 
 function downloadCSV() {
     let csvContent = "data:text/csv;charset=utf-8,Child,Grade,Parent,Phone,Email,PickUp,Medical\n";
-    allExplorers.forEach(d => { csvContent += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.pickupNames}","${d.medicalNotes}"\n`; });
+    allExplorers.forEach(d => {
+        csvContent += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.pickupNames}","${d.medicalNotes}"\n`;
+    });
     const link = document.createElement("a");
     link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", "VBS_Roster.csv");
+    link.setAttribute("download", "VBS_Roster_2026.csv");
     document.body.appendChild(link);
     link.click();
 }
 
 window.deleteEntry = async (id) => {
-    if (confirm("Delete this entry?")) {
+    if (confirm("Permanently delete this entry?")) {
         await deleteDoc(doc(db, "registrations", id));
         fetchExplorers();
     }
