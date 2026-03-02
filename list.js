@@ -12,17 +12,19 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-let allExplorers = [];
+let allChildren = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     const passInput = document.getElementById('passInput');
     const toggleBtn = document.getElementById('togglePass');
+    
+    // --- FIXED SHOW PASSWORD LOGIC ---
     if (toggleBtn && passInput) {
-        toggleBtn.addEventListener('click', () => {
-            const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passInput.setAttribute('type', type);
-            toggleBtn.textContent = type === 'password' ? 'Show' : 'Hide';
-        });
+        toggleBtn.onclick = () => {
+            const isPassword = passInput.type === 'password';
+            passInput.type = isPassword ? 'text' : 'password';
+            toggleBtn.textContent = isPassword ? 'Hide' : 'Show';
+        };
     }
 
     const loginBtn = document.getElementById('loginBtn');
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (configSnap.exists() && userInput === configSnap.data().passcode) { 
                     document.getElementById('loginOverlay').style.display = 'none';
                     document.getElementById('adminContent').style.display = 'block';
-                    fetchExplorers();
+                    fetchChildren();
                 } else {
                     errDiv.textContent = "Incorrect Password.";
                 }
@@ -44,24 +46,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-async function fetchExplorers() {
+async function fetchChildren() {
     const explorerList = document.getElementById('explorerList');
     const csvContainer = document.getElementById('csvContainer');
     try {
         const querySnapshot = await getDocs(collection(db, "registrations"));
-        allExplorers = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        allChildren = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
         if (csvContainer) {
             csvContainer.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:20px;">
                     <h2 style="white-space: nowrap;">VBS 2026 Roster</h2>
                     <button id="downloadCSV" style="width: auto; background: #27ae60; margin-left: 20px;">Download Roster</button>
-                    <span style="font-weight:bold;">Total Children: ${allExplorers.length}</span>
+                    <span style="font-weight:bold;">Total Children: ${allChildren.length}</span>
                 </div>
             `;
             document.getElementById('downloadCSV').onclick = downloadCSV;
         }
-        renderList(allExplorers);
+        renderList(allChildren);
     } catch (e) { console.error(e); }
 }
 
@@ -72,7 +74,7 @@ function renderList(list) {
     list.forEach(data => {
         const li = document.createElement('li');
         li.style.cssText = "border-bottom:1px solid #eee; padding:15px 0; list-style:none;";
-        // Explicitly rendering all fields to ensure they show on screen
+        // Explicitly rendering all fields
         li.innerHTML = `
             <div>
                 <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
@@ -92,7 +94,7 @@ function renderList(list) {
 
 function downloadCSV() {
     let csvContent = "data:text/csv;charset=utf-8,Child,Grade,Parent,Phone,Email,Church,PickUp,Medical\n";
-    allExplorers.forEach(d => {
+    allChildren.forEach(d => {
         csvContent += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.homeChurch}","${d.pickupNames}","${d.medicalNotes}"\n`;
     });
     const link = document.createElement("a");
@@ -105,6 +107,6 @@ function downloadCSV() {
 window.deleteEntry = async (id) => {
     if (confirm("Delete this child's record?")) {
         await deleteDoc(doc(db, "registrations", id));
-        fetchExplorers();
+        fetchChildren();
     }
 };
