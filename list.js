@@ -15,10 +15,21 @@ const db = getFirestore(app);
 let allExplorers = [];
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Show/Hide Password Logic
+    const passInput = document.getElementById('passInput');
+    const toggleBtn = document.getElementById('togglePass');
+    if (toggleBtn && passInput) {
+        toggleBtn.addEventListener('click', () => {
+            const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passInput.setAttribute('type', type);
+            toggleBtn.textContent = type === 'password' ? 'Show' : 'Hide';
+        });
+    }
+
     const loginBtn = document.getElementById('loginBtn');
     if (loginBtn) {
         loginBtn.addEventListener('click', async () => {
-            const userInput = document.getElementById('passInput').value;
+            const userInput = passInput.value;
             const errDiv = document.getElementById('err');
             try {
                 const configSnap = await getDoc(doc(db, "config", "admin_settings"));
@@ -29,10 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     errDiv.textContent = "Incorrect Password.";
                 }
-            } catch (e) { 
-                console.error(e);
-                if(errDiv) errDiv.textContent = "Access Denied."; 
-            }
+            } catch (e) { errDiv.textContent = "Access Denied."; }
         });
     }
 });
@@ -40,38 +48,21 @@ document.addEventListener('DOMContentLoaded', () => {
 async function fetchExplorers() {
     const explorerList = document.getElementById('explorerList');
     const csvContainer = document.getElementById('csvContainer');
-    const searchInput = document.getElementById('adminSearch');
-    
     try {
         const querySnapshot = await getDocs(collection(db, "registrations"));
         allExplorers = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        // Safety Check: Fixes the 'null' error from your screenshot
         if (csvContainer) {
-            csvContainer.className = "csv-btn-center";
             csvContainer.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:20px;">
-                    <h2 style="margin:0; white-space: nowrap;">VBS 2026 Roster</h2>
+                    <h2 style="white-space: nowrap;">VBS 2026 Roster</h2>
                     <button id="downloadCSV" style="width: auto; background: #27ae60; margin-left: 20px;">Download Roster</button>
                     <span style="font-weight:bold;">Total: ${allExplorers.length}</span>
                 </div>
             `;
             document.getElementById('downloadCSV').onclick = downloadCSV;
         }
-
         renderList(allExplorers);
-
-        if (searchInput) {
-            searchInput.oninput = (e) => {
-                const term = e.target.value.toLowerCase();
-                const filtered = allExplorers.filter(ex => 
-                    ex.firstName.toLowerCase().includes(term) || 
-                    ex.lastName.toLowerCase().includes(term) || 
-                    ex.parentName.toLowerCase().includes(term)
-                );
-                renderList(filtered);
-            };
-        }
     } catch (e) { console.error(e); }
 }
 
@@ -81,18 +72,17 @@ function renderList(list) {
     explorerList.innerHTML = "";
     list.forEach(data => {
         const li = document.createElement('li');
-        li.style.cssText = "display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:12px 0;";
+        li.style.cssText = "border-bottom:1px solid #eee; padding:15px 0;";
         li.innerHTML = `
             <div>
                 <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
                 <span style="font-size: 0.9em; color: #666;">
                     Parent: ${data.parentName}<br>
-                    Email: ${data.email} | Phone: ${data.phone}<br>
-                    <strong>Pick-up:</strong> ${data.pickupNames || 'N/A'}<br>
-                    <strong>Medical:</strong> ${data.medicalNotes || 'N/A'}
+                    Pick-up: ${data.pickupNames || 'N/A'}<br>
+                    Medical: ${data.medicalNotes || 'N/A'}
                 </span>
             </div>
-            <button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 5px 10px; font-size: 12px; cursor:pointer;">Delete</button>
+            <button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 5px 10px; font-size: 12px; margin-top: 10px;">Delete</button>
         `;
         explorerList.appendChild(li);
     });
@@ -111,7 +101,7 @@ function downloadCSV() {
 }
 
 window.deleteEntry = async (id) => {
-    if (confirm("Permanently delete this entry?")) {
+    if (confirm("Delete this entry?")) {
         await deleteDoc(doc(db, "registrations", id));
         fetchExplorers();
     }
