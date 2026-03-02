@@ -13,6 +13,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Phone Formatter
 const phoneInput = document.getElementById('parentPhone');
 if (phoneInput) {
     phoneInput.oninput = (e) => {
@@ -31,7 +32,7 @@ document.getElementById('registrationForm').onsubmit = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
-    btn.textContent = "Registering Child...";
+    btn.textContent = "Registering...";
 
     try {
         await addDoc(collection(db, "registrations"), {
@@ -42,14 +43,14 @@ document.getElementById('registrationForm').onsubmit = async (e) => {
             phone: document.getElementById('parentPhone').value,
             email: document.getElementById('parentEmail').value,
             homeChurch: document.getElementById('homeChurch').value,
-            medicalInfo: document.getElementById('medicalInfo').value,
             pickupNames: document.getElementById('pickupNames').value,
+            medicalNotes: document.getElementById('medicalNotes').value,
             timestamp: new Date()
         });
         window.location.href = "success.html";
     } catch (error) {
         alert("Error: " + error.message);
         btn.disabled = false;
-        btn.textContent = "Register Child";
+        btn.textContent = "Register Explorer";
     }
 };
