@@ -1,4 +1,84 @@
-// ... (Firebase initialization same as above) ...
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyB9wvQ525wCsxZmIZmfzj6Z5VjF2aSUu_g",
+    authDomain: "registervbs-83306.firebaseapp.com",
+    projectId: "registervbs-83306",
+    storageBucket: "registervbs-83306.firebasestorage.app",
+    messagingSenderId: "462529063270",
+    appId: "1:462529063270:web:40c1333dc7c450345300a7"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+let allExplorers = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', async () => {
+            const userInput = document.getElementById('passInput').value;
+            const errDiv = document.getElementById('err');
+            
+            try {
+                // Securely fetch the passcode from your Firestore config
+                const configSnap = await getDoc(doc(db, "config", "admin_settings"));
+                
+                if (configSnap.exists()) {
+                    const dbPasscode = configSnap.data().passcode;
+                    
+                    if (userInput === dbPasscode) { 
+                        document.getElementById('loginOverlay').style.display = 'none';
+                        document.getElementById('adminContent').style.display = 'block';
+                        fetchExplorers();
+                    } else {
+                        errDiv.textContent = "Incorrect Password.";
+                    }
+                } else {
+                    errDiv.textContent = "Security Error: admin_settings doc not found.";
+                }
+            } catch (e) {
+                errDiv.textContent = "Access Denied. Check Firestore Rules.";
+            }
+        });
+    }
+});
+
+async function fetchExplorers() {
+    const explorerList = document.getElementById('explorerList');
+    const csvContainer = document.getElementById('csvContainer');
+    const searchInput = document.getElementById('adminSearch');
+    
+    try {
+        const querySnapshot = await getDocs(collection(db, "registrations"));
+        allExplorers = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        // Header layout: Keeps "VBS 2026 Roster" on one line
+        csvContainer.className = "csv-btn-center";
+        csvContainer.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:20px;">
+                <h2 style="margin:0; white-space: nowrap;">VBS 2026 Roster</h2>
+                <button id="downloadCSV" style="width: auto; background: #27ae60; margin-left: 20px;">Download Roster</button>
+                <span style="font-weight:bold;">Total Children: ${allExplorers.length}</span>
+            </div>
+        `;
+        
+        document.getElementById('downloadCSV').onclick = downloadCSV;
+        renderList(allExplorers);
+
+        // Real-time Search Logic
+        searchInput.oninput = (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allExplorers.filter(ex => 
+                ex.firstName.toLowerCase().includes(term) || 
+                ex.lastName.toLowerCase().includes(term) || 
+                ex.parentName.toLowerCase().includes(term)
+            );
+            renderList(filtered);
+        };
+    } catch (e) { console.error(e); }
+}
 
 function renderList(list) {
     const explorerList = document.getElementById('explorerList');
@@ -22,4 +102,21 @@ function renderList(list) {
     });
 }
 
-// ... (CSV and search logic same as before) ...
+function downloadCSV() {
+    let csvContent = "data:text/csv;charset=utf-8,Child,Grade,Parent,Phone,Email,PickUp,Medical\n";
+    allExplorers.forEach(d => {
+        csvContent += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.pickupNames}","${d.medicalNotes}"\n`;
+    });
+    const link = document.createElement("a");
+    link.setAttribute("href", encodeURI(csvContent));
+    link.setAttribute("download", "VBS_Roster_2026.csv");
+    document.body.appendChild(link);
+    link.click();
+}
+
+window.deleteEntry = async (id) => {
+    if (confirm("Permanently delete this entry?")) {
+        await deleteDoc(doc(db, "registrations", id));
+        fetchExplorers();
+    }
+};
