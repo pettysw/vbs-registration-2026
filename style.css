@@ -1,5 +1,144 @@
-body { font-family: Arial, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 50px; }
-.container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-form { display: flex; flex-direction: column; gap: 15px; }
-input, textarea { padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
-button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+/* VBS 2026 Registration Styles 
+   Project: Waterfall Explorer Theme
+*/
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f7f6;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    margin: 0;
+}
+
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    max-width: 550px;
+    width: 100%;
+}
+
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-top: 10px;
+}
+
+p {
+    text-align: center;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+/* Form Grouping and Spacing */
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Spacing between label and input box */
+label {
+    font-weight: bold;
+    margin-bottom: 8px; 
+    margin-right: 15px; /* Extra gap for inline elements */
+    color: #333;
+}
+
+input, select {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus, select:focus {
+    border-color: #3498db;
+}
+
+/* Main Action Buttons */
+button {
+    width: 100%;
+    padding: 15px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+/* --- Admin Specific Styles --- */
+
+/* Centered Search Bar */
+#adminSearch {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    padding: 12px 20px;
+    border: 2px solid #3498db;
+    border-radius: 25px;
+    font-size: 16px;
+}
+
+/* Centered CSV Button Container */
+.csv-btn-center {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+/* Download CSV Button Style */
+#downloadCSV {
+    width: auto !important; /* Overrides global button width */
+    background-color: #27ae60;
+    padding: 10px 25px;
+    font-size: 16px;
+}
+
+#downloadCSV:hover {
+    background-color: #219150;
+}
+
+/* Admin Roster List Items */
+#explorerList {
+    list-style: none;
+    padding: 0;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+    width: auto !important;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+    
+    input, select, button {
+        font-size: 14px;
+    }
+}
