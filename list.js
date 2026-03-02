@@ -20,27 +20,17 @@ document.addEventListener('DOMContentLoaded', () => {
         loginBtn.addEventListener('click', async () => {
             const userInput = document.getElementById('passInput').value;
             const errDiv = document.getElementById('err');
-            
             try {
-                // Securely fetch the passcode from your Firestore config
+                // Fetch passcode from config/admin_settings in Firestore
                 const configSnap = await getDoc(doc(db, "config", "admin_settings"));
-                
-                if (configSnap.exists()) {
-                    const dbPasscode = configSnap.data().passcode;
-                    
-                    if (userInput === dbPasscode) { 
-                        document.getElementById('loginOverlay').style.display = 'none';
-                        document.getElementById('adminContent').style.display = 'block';
-                        fetchExplorers();
-                    } else {
-                        errDiv.textContent = "Incorrect Password.";
-                    }
+                if (configSnap.exists() && userInput === configSnap.data().passcode) { 
+                    document.getElementById('loginOverlay').style.display = 'none';
+                    document.getElementById('adminContent').style.display = 'block';
+                    fetchExplorers();
                 } else {
-                    errDiv.textContent = "Security Error: admin_settings doc not found.";
+                    errDiv.textContent = "Incorrect Password.";
                 }
-            } catch (e) {
-                errDiv.textContent = "Access Denied. Check Firestore Rules.";
-            }
+            } catch (e) { errDiv.textContent = "Access Denied. Check Firestore Rules."; }
         });
     }
 });
@@ -49,31 +39,25 @@ async function fetchExplorers() {
     const explorerList = document.getElementById('explorerList');
     const csvContainer = document.getElementById('csvContainer');
     const searchInput = document.getElementById('adminSearch');
-    
     try {
         const querySnapshot = await getDocs(collection(db, "registrations"));
         allExplorers = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        // Header layout: Keeps "VBS 2026 Roster" on one line
+        // Inline header layout
         csvContainer.className = "csv-btn-center";
         csvContainer.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:20px;">
                 <h2 style="margin:0; white-space: nowrap;">VBS 2026 Roster</h2>
                 <button id="downloadCSV" style="width: auto; background: #27ae60; margin-left: 20px;">Download Roster</button>
-                <span style="font-weight:bold;">Total Children: ${allExplorers.length}</span>
+                <span style="font-weight:bold;">Total: ${allExplorers.length}</span>
             </div>
         `;
-        
         document.getElementById('downloadCSV').onclick = downloadCSV;
         renderList(allExplorers);
-
-        // Real-time Search Logic
         searchInput.oninput = (e) => {
             const term = e.target.value.toLowerCase();
             const filtered = allExplorers.filter(ex => 
-                ex.firstName.toLowerCase().includes(term) || 
-                ex.lastName.toLowerCase().includes(term) || 
-                ex.parentName.toLowerCase().includes(term)
+                ex.firstName.toLowerCase().includes(term) || ex.lastName.toLowerCase().includes(term) || ex.parentName.toLowerCase().includes(term)
             );
             renderList(filtered);
         };
@@ -86,36 +70,23 @@ function renderList(list) {
     list.forEach(data => {
         const li = document.createElement('li');
         li.style.cssText = "display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:12px 0;";
-        li.innerHTML = `
-            <div>
-                <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
-                <span style="font-size: 0.9em; color: #666;">
-                    Parent: ${data.parentName}<br>
-                    Email: ${data.email} | Phone: ${data.phone}<br>
-                    <strong>Pick-up:</strong> ${data.pickupNames || 'None listed'}<br>
-                    <strong>Medical:</strong> ${data.medicalNotes || 'None listed'}
-                </span>
-            </div>
-            <button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 5px 10px; font-size: 12px; cursor:pointer;">Delete</button>
-        `;
+        li.innerHTML = `<div><strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br><span style="font-size: 0.9em; color: #666;">Parent: ${data.parentName}<br>Email: ${data.email} | Phone: ${data.phone}<br>Pick-up: ${data.pickupNames || 'N/A'}<br>Medical: ${data.medicalNotes || 'N/A'}</span></div><button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 5px 10px; font-size: 12px; cursor:pointer;">Delete</button>`;
         explorerList.appendChild(li);
     });
 }
 
 function downloadCSV() {
     let csvContent = "data:text/csv;charset=utf-8,Child,Grade,Parent,Phone,Email,PickUp,Medical\n";
-    allExplorers.forEach(d => {
-        csvContent += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.pickupNames}","${d.medicalNotes}"\n`;
-    });
+    allExplorers.forEach(d => { csvContent += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.pickupNames}","${d.medicalNotes}"\n`; });
     const link = document.createElement("a");
     link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", "VBS_Roster_2026.csv");
+    link.setAttribute("download", "VBS_Roster.csv");
     document.body.appendChild(link);
     link.click();
 }
 
 window.deleteEntry = async (id) => {
-    if (confirm("Permanently delete this entry?")) {
+    if (confirm("Delete this entry?")) {
         await deleteDoc(doc(db, "registrations", id));
         fetchExplorers();
     }
