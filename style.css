@@ -5,7 +5,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    /* Restored Sunset/Deep Blue Gradient */
+    /* Deep Blue and Sunset Orange Gradient */
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); 
     display: flex;
     justify-content: center;
@@ -39,7 +39,7 @@ h1 {
 label {
     font-weight: bold;
     margin-bottom: 6px;
-    margin-right: 15px; 
+    margin-right: 15px; /* */
     color: #2c3e50;
 }
 
@@ -80,19 +80,31 @@ button:hover {
     background-color: #e67e22;
 }
 
-/* --- Admin & Password Logic Styles --- */
+/* --- Admin & Login Styles --- */
+
+/* Centered Login Button */
+#loginBtn {
+    width: 200px; /* Fixed width instead of screen width */
+    margin: 20px auto;
+    display: block; 
+}
 
 /* Password Toggle Layout */
 .pass-wrapper {
     display: flex;
     gap: 10px;
+    justify-content: center;
     margin-bottom: 15px;
+}
+
+#passInput {
+    width: 250px;
 }
 
 #togglePass {
     width: auto;
-    padding: 0 15px;
     background-color: #7f8c8d;
+    padding: 0 15px;
     font-size: 14px;
 }
 
@@ -104,7 +116,7 @@ button:hover {
 }
 
 h2 {
-    white-space: nowrap; 
+    white-space: nowrap; /* */
     color: #1e3c72;
     margin: 0;
 }
@@ -126,27 +138,27 @@ h2 {
 }
 
 /* Roster List Items */
+#explorerList {
+    padding: 0;
+}
+
 #explorerList li {
     background: #f9f9f9;
     margin-bottom: 10px;
     padding: 15px;
     border-radius: 8px;
-    list-style: none;
+    list-style: none; /* */
 }
 
-.delete-btn {
-    background-color: #e74c3c;
-    width: auto;
-    padding: 6px 12px;
-    font-size: 13px;
-}
-
-/* PC/Mobile Optimization */
+/* Mobile Optimization */
 @media (max-width: 500px) {
     .container {
         padding: 20px;
     }
     h2 {
         font-size: 1.2rem;
+    }
+    #passInput {
+        width: 100%;
     }
 }
