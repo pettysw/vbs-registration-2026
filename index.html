@@ -12,45 +12,26 @@
         <div style="text-align: center;">
             <img src="ico.png" alt="VBS Icon" style="width: 100px; height: auto;">
         </div>
-        <h1 style="text-align: center;">VBS 2026 Registration</h1>
+        <h1>VBS 2026 Registration</h1>
         
         <form id="registrationForm">
+            <div class="form-group"><label for="childFirstName">Child's First Name</label><input type="text" id="childFirstName" required></div>
+            <div class="form-group"><label for="childLastName">Child's Last Name</label><input type="text" id="childLastName" required></div>
+            <div class="form-group"><label for="grade">Grade</label><select id="grade" required><option value="">Select Grade</option><option value="K">Kindergarten</option><option value="1">1st Grade</option><option value="2">2nd Grade</option><option value="3">3rd Grade</option><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div>
+            <div class="form-group"><label for="parentName">Parent's Full Name</label><input type="text" id="parentName" required></div>
+            <div class="form-group"><label for="parentPhone">Emergency Contact Phone</label><input type="tel" id="parentPhone" maxlength="14" placeholder="(555) 555-5555" required></div>
+            <div class="form-group"><label for="parentEmail">Parent Email</label><input type="email" id="parentEmail" placeholder="name@example.com" required></div>
+            <div class="form-group"><label for="homeChurch">Home Church</label><input type="text" id="homeChurch" placeholder="Enter church name or 'None'"></div>
+
             <div class="form-group">
-                <label for="childFirstName">Child's First Name</label>
-                <input type="text" id="childFirstName" required>
+                <label for="allergies">Allergies / Dietary Restrictions</label>
+                <textarea id="allergies" rows="3" placeholder="List any allergies..."></textarea>
             </div>
             <div class="form-group">
-                <label for="childLastName">Child's Last Name</label>
-                <input type="text" id="childLastName" required>
+                <label for="medicalInfo">Medical Conditions / Other Info</label>
+                <textarea id="medicalInfo" rows="3" placeholder="Any other important info..."></textarea>
             </div>
-            <div class="form-group">
-                <label for="grade">Grade (Entering in Fall)</label>
-                <select id="grade" required>
-                    <option value="">Select Grade</option>
-                    <option value="K">Kindergarten</option>
-                    <option value="1">1st Grade</option>
-                    <option value="2">2nd Grade</option>
-                    <option value="3">3rd Grade</option>
-                    <option value="4">4th Grade</option>
-                    <option value="5">5th Grade</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="parentName">Parent's Full Name</label>
-                <input type="text" id="parentName" required>
-            </div>
-            <div class="form-group">
-                <label for="parentPhone">Emergency Contact Phone</label>
-                <input type="tel" id="parentPhone" maxlength="14" placeholder="(555) 555-5555" required>
-            </div>
-            <div class="form-group">
-                <label for="parentEmail">Parent Email</label>
-                <input type="email" id="parentEmail" placeholder="name@example.com" required>
-            </div>
-            <div class="form-group">
-                <label for="homeChurch">Home Church (if any)</label>
-                <input type="text" id="homeChurch" placeholder="Enter church name or 'None'">
-            </div>
+
             <button type="submit" id="submitBtn">Register Explorer</button>
         </form>
     </div>
