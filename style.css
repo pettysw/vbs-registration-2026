@@ -1,5 +1,6 @@
 /* VBS 2026 Registration Styles 
    Project: Waterfall Explorer Theme
+   Location: Cody, Wyoming
 */
 
 body {
@@ -16,7 +17,7 @@ body {
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    max-width: 550px;
+    max-width: 600px; /* Widened slightly to accommodate admin search */
     width: 100%;
 }
 
@@ -43,10 +44,11 @@ p {
 label {
     font-weight: bold;
     margin-bottom: 8px; 
-    margin-right: 15px; /* Extra gap for inline elements */
+    margin-right: 15px; /* Added 15px gap for inline alignment */
     color: #333;
 }
 
+/* Standard Inputs and Select Boxes */
 input, select {
     padding: 12px;
     border: 1px solid #ddd;
@@ -56,7 +58,19 @@ input, select {
     transition: border-color 0.2s;
 }
 
-input:focus, select:focus {
+/* Multiline Textbox Styling */
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: inherit;
+    resize: vertical; /* Allows vertical expansion */
+    box-sizing: border-box;
+}
+
+input:focus, select:focus, textarea:focus {
     border-color: #3498db;
 }
 
@@ -85,6 +99,12 @@ button:disabled {
 
 /* --- Admin Specific Styles --- */
 
+/* Single line header logic for Admin Roster */
+h2 {
+    white-space: nowrap; /* Keeps "VBS 2026 Roster" on one line */
+    margin: 0;
+}
+
 /* Centered Search Bar */
 #adminSearch {
     width: 100%;
@@ -96,16 +116,16 @@ button:disabled {
     font-size: 16px;
 }
 
-/* Centered CSV Button Container */
+/* Centered CSV Button and Header Container */
 .csv-btn-center {
     display: flex;
     justify-content: center;
     margin: 20px 0;
 }
 
-/* Download CSV Button Style */
+/* Download Button Specifics */
 #downloadCSV {
-    width: auto !important; /* Overrides global button width */
+    width: auto !important; 
     background-color: #27ae60;
     padding: 10px 25px;
     font-size: 16px;
@@ -121,24 +141,8 @@ button:disabled {
     padding: 0;
 }
 
+/* Delete Button Specifics */
 .delete-btn {
     background-color: #e74c3c;
     width: auto !important;
-    padding: 8px 12px;
-    font-size: 14px;
-}
-
-.delete-btn:hover {
-    background-color: #c0392b;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 480px) {
-    .container {
-        padding: 15px;
-    }
-    
-    input, select, button {
-        font-size: 14px;
-    }
-}
+    padding
