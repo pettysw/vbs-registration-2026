@@ -1,4 +1,3 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -23,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const errDiv = document.getElementById('err');
             
             try {
-                // Fetch the password from your private "config" collection
+                // Securely fetch password from database
                 const configRef = doc(db, "config", "admin_settings");
                 const configSnap = await getDoc(configRef);
                 
@@ -38,10 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (errDiv) errDiv.textContent = "Incorrect Password.";
                     }
                 } else {
-                    if (errDiv) errDiv.textContent = "Security Error: Config missing.";
+                    if (errDiv) errDiv.textContent = "Security Error: Setup required.";
                 }
             } catch (e) {
-                if (errDiv) errDiv.textContent = "Access Denied.";
+                if (errDiv) errDiv.textContent = "Access Denied. Check Firestore Rules.";
             }
         });
     }
@@ -56,12 +55,14 @@ async function fetchExplorers() {
         const querySnapshot = await getDocs(collection(db, "registrations"));
         allExplorers = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
+        // Center the CSV Button
         csvContainer.className = "csv-btn-center";
         csvContainer.innerHTML = `<button id="downloadCSV" style="width: auto; background: #27ae60;">Download CSV Roster</button>`;
         
         document.getElementById('downloadCSV').onclick = downloadCSV;
         renderList(allExplorers);
 
+        // Real-time Search Logic
         searchInput.oninput = (e) => {
             const term = e.target.value.toLowerCase();
             const filtered = allExplorers.filter(ex => 
@@ -89,7 +90,7 @@ function renderList(list) {
                     Church: ${data.homeChurch}
                 </span>
             </div>
-            <button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 5px 10px; font-size: 12px;">Delete</button>
+            <button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 5px 10px; font-size: 12px; cursor:pointer;">Delete</button>
         `;
         explorerList.appendChild(li);
     });
@@ -102,13 +103,13 @@ function downloadCSV() {
     });
     const link = document.createElement("a");
     link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", "VBS_Roster.csv");
+    link.setAttribute("download", "VBS_Roster_2026.csv");
     document.body.appendChild(link);
     link.click();
 }
 
 window.deleteEntry = async (id) => {
-    if (confirm("Delete this entry?")) {
+    if (confirm("Permanently delete this entry?")) {
         await deleteDoc(doc(db, "registrations", id));
         fetchExplorers();
     }
