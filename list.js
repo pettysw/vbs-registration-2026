@@ -22,25 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const errDiv = document.getElementById('err');
             
             try {
-                // Securely fetch password from database
-                const configRef = doc(db, "config", "admin_settings");
-                const configSnap = await getDoc(configRef);
-                
-                if (configSnap.exists()) {
-                    const dbPasscode = configSnap.data().passcode;
-                    
-                    if (userInput === dbPasscode) { 
-                        document.getElementById('loginOverlay').style.display = 'none';
-                        document.getElementById('adminContent').style.display = 'block';
-                        fetchExplorers();
-                    } else {
-                        if (errDiv) errDiv.textContent = "Incorrect Password.";
-                    }
+                // Fixed database passcode fetch
+                const configSnap = await getDoc(doc(db, "config", "admin_settings"));
+                if (configSnap.exists() && userInput === configSnap.data().passcode) { 
+                    document.getElementById('loginOverlay').style.display = 'none';
+                    document.getElementById('adminContent').style.display = 'block';
+                    fetchExplorers();
                 } else {
-                    if (errDiv) errDiv.textContent = "Security Error: Setup required.";
+                    errDiv.textContent = "Incorrect Password.";
                 }
-            } catch (e) {
-                if (errDiv) errDiv.textContent = "Access Denied. Check Firestore Rules.";
+            } catch (e) { 
+                errDiv.textContent = "Login Failed. Check Firestore Config.";
             }
         });
     }
@@ -55,14 +47,19 @@ async function fetchExplorers() {
         const querySnapshot = await getDocs(collection(db, "registrations"));
         allExplorers = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        // Center the CSV Button
+        // Single line header layout fix
         csvContainer.className = "csv-btn-center";
-        csvContainer.innerHTML = `<button id="downloadCSV" style="width: auto; background: #27ae60;">Download CSV Roster</button>`;
+        csvContainer.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:20px;">
+                <h2 style="margin:0; white-space: nowrap;">VBS 2026 Roster</h2>
+                <button id="downloadCSV" style="width: auto; background: #27ae60; margin-left: 20px;">Download Roster</button>
+                <span style="font-weight:bold;">Total Children: ${allExplorers.length}</span>
+            </div>
+        `;
         
         document.getElementById('downloadCSV').onclick = downloadCSV;
         renderList(allExplorers);
 
-        // Real-time Search Logic
         searchInput.oninput = (e) => {
             const term = e.target.value.toLowerCase();
             const filtered = allExplorers.filter(ex => 
@@ -86,8 +83,9 @@ function renderList(list) {
                 <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
                 <span style="font-size: 0.9em; color: #666;">
                     Parent: ${data.parentName}<br>
-                    Phone: ${data.phone} | Email: ${data.email}<br>
-                    Church: ${data.homeChurch}
+                    Email: ${data.email} | Phone: ${data.phone}<br>
+                    <strong>Allergies:</strong> ${data.allergies || 'None'}<br>
+                    <strong>Medical:</strong> ${data.medicalInfo || 'None'}
                 </span>
             </div>
             <button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 5px 10px; font-size: 12px; cursor:pointer;">Delete</button>
@@ -97,9 +95,9 @@ function renderList(list) {
 }
 
 function downloadCSV() {
-    let csvContent = "data:text/csv;charset=utf-8,Child,Grade,Parent,Phone,Email,Church\n";
+    let csvContent = "data:text/csv;charset=utf-8,Child,Grade,Parent,Phone,Email,Allergies,Medical\n";
     allExplorers.forEach(d => {
-        csvContent += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.homeChurch}"\n`;
+        csvContent += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.allergies}","${d.medicalInfo}"\n`;
     });
     const link = document.createElement("a");
     link.setAttribute("href", encodeURI(csvContent));
