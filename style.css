@@ -24,45 +24,63 @@ body {
 
 h1, h2 { color: #1e3c72; text-align: center; margin-bottom: 20px; }
 
+/* Admin Header Spacing Fixes */
+.csv-btn-center {
+    border-bottom: 2px solid #eee;
+    padding: 10px 0 25px 0;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#downloadCSV {
+    width: auto;
+    background-color: #27ae60;
+    padding: 12px 25px; /* Spacing inside button */
+    margin: 0 20px; /* Spacing between title and count */
+}
+
+#countParent {
+    font-weight: bold;
+    color: #1e3c72;
+    min-width: 140px;
+    text-align: right;
+}
+
+/* Search Bar Fix */
+#adminSearch {
+    width: 100%;
+    margin: 25px 0;
+    border: 2px solid #1e3c72;
+    border-radius: 25px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+}
+
+/* Card Spacing */
+#explorerList { padding: 0; list-style: none; }
+
+#explorerList li {
+    background: #f9f9f9;
+    margin: 0 0 15px 15px; /* 15px left margin */
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 5px solid #1e3c72;
+}
+
+/* Form Styles */
 .form-group { margin-bottom: 18px; display: flex; flex-direction: column; }
-
 label { font-weight: bold; margin-bottom: 6px; color: #2c3e50; }
-
 input, select, textarea { padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
-
-input:focus, select:focus, textarea:focus { border-color: #f39c12; outline: none; }
+input:focus { border-color: #f39c12; outline: none; }
 
 button {
     width: 100%; padding: 15px; background-color: #f39c12; color: white;
     border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s;
 }
 
-button:hover { background-color: #e67e22; }
-
-/* Admin Specifics */
-.csv-btn-center {
-    border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 25px;
-    display: flex; justify-content: space-between; align-items: center;
-}
-
-#downloadCSV { width: auto; background-color: #27ae60; padding: 12px 25px; }
-
-#adminSearch {
-    width: 100%; margin: 20px 0; border: 2px solid #1e3c72; border-radius: 25px;
-    padding: 12px 20px; box-sizing: border-box;
-}
-
-#explorerList { padding: 0; list-style: none; }
-
-#explorerList li {
-    background: #f9f9f9; margin: 0 0 15px 15px; /* Card Spacing */
-    padding: 20px; border-radius: 8px; border-left: 5px solid #1e3c72;
-}
-
 #loginBtn { width: 250px; margin: 25px auto; display: block; }
-
 .pass-wrapper { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
-
 #togglePass { width: auto; background-color: #7f8c8d; padding: 0 15px; }
-
 .delete-btn { width: auto; padding: 8px 15px; font-size: 13px; background: #e74c3c; margin-top: 15px; }
