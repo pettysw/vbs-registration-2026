@@ -19,84 +19,51 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     max-width: 850px;
     width: 100%;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Fixes search bar overflow */
 }
 
-h1, h2 {
-    color: #1e3c72;
-    text-align: center;
-}
+h1, h2 { color: #1e3c72; text-align: center; margin-bottom: 20px; }
 
-.form-group {
-    margin-bottom: 18px;
-    display: flex;
-    flex-direction: column;
-}
+.form-group { margin-bottom: 18px; display: flex; flex-direction: column; }
 
-label {
-    font-weight: bold;
-    margin-bottom: 6px;
-    margin-right: 15px; 
-    color: #2c3e50;
-}
+label { font-weight: bold; margin-bottom: 6px; color: #2c3e50; }
 
-input, select, textarea {
-    padding: 12px;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    font-size: 16px;
-}
+input, select, textarea { padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
 
-input:focus, select:focus, textarea:focus {
-    border-color: #f39c12;
-    outline: none;
-}
+input:focus, select:focus, textarea:focus { border-color: #f39c12; outline: none; }
 
-/* Main Action Buttons */
 button {
-    width: 100%;
-    padding: 15px;
-    background-color: #f39c12; 
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
+    width: 100%; padding: 15px; background-color: #f39c12; color: white;
+    border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s;
 }
 
 button:hover { background-color: #e67e22; }
 
-/* Admin Specifics */
+/* Admin Header */
 .csv-btn-center {
-    border-bottom: 2px solid #eee;
-    padding-bottom: 20px;
-    margin-bottom: 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 25px;
+    display: flex; justify-content: space-between; align-items: center;
 }
 
 #downloadCSV { width: auto; background-color: #27ae60; padding: 12px 25px; }
 
 #adminSearch {
-    width: 100%;
-    margin: 20px 0;
-    border: 2px solid #1e3c72;
-    border-radius: 25px;
-    padding: 12px 20px;
-    box-sizing: border-box;
+    width: 100%; margin: 20px 0; border: 2px solid #1e3c72; border-radius: 25px;
+    padding: 12px 20px; box-sizing: border-box;
 }
 
 #explorerList { padding: 0; list-style: none; }
 
 #explorerList li {
-    background: #f9f9f9;
-    margin: 0 0 15px 15px; /* 15px left margin */
-    padding: 20px;
-    border-radius: 8px;
-    border-left: 5px solid #1e3c72;
+    background: #f9f9f9; margin: 0 0 15px 15px; /* Card Spacing */
+    padding: 20px; border-radius: 8px; border-left: 5px solid #1e3c72;
 }
 
+/* Login Button */
 #loginBtn { width: 250px; margin: 25px auto; display: block; }
+
+.pass-wrapper { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+
+#togglePass { width: auto; background-color: #7f8c8d; padding: 0 15px; }
+
+.delete-btn { width: auto; padding: 8px 15px; font-size: 13px; background: #e74c3c; margin-top: 15px; }
