@@ -14,7 +14,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 let currentRoster = [];
 
-// --- FIXED TOGGLE & LOGIN FOR PC ---
+// --- ATTACHING TO WINDOW TO FIX "NOT A FUNCTION" ERRORS ---
+
 window.toggleMyPass = () => {
     const passInput = document.getElementById('passInput');
     const toggleBtn = document.getElementById('togglePass');
@@ -27,7 +28,7 @@ window.adminLogin = async () => {
     const userInput = document.getElementById('passInput').value;
     const errDiv = document.getElementById('err');
     try {
-        const configSnap = await getDoc(doc(db, "config", "admin_settings"));
+        const configSnap = await getDoc(doc(doc(db, "config", "admin_settings")));
         if (configSnap.exists() && userInput === configSnap.data().passcode) { 
             document.getElementById('loginOverlay').style.display = 'none';
             document.getElementById('adminContent').style.display = 'block';
@@ -35,16 +36,21 @@ window.adminLogin = async () => {
         } else {
             errDiv.textContent = "Incorrect Password.";
         }
-    } catch (e) { errDiv.textContent = "Login Error: " + e.message; }
+    } catch (e) { 
+        errDiv.textContent = "Login Error. Check database connection.";
+    }
 };
 
 async function fetchChildren() {
     try {
         const querySnapshot = await getDocs(collection(db, "registrations"));
         currentRoster = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        // Update accurate child count
         document.getElementById('countDisplay').textContent = currentRoster.length;
+        
         renderList(currentRoster);
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("Fetch error:", e); }
 }
 
 function renderList(list) {
@@ -52,11 +58,11 @@ function renderList(list) {
     explorerList.innerHTML = "";
     list.forEach(data => {
         const li = document.createElement('li');
-        // Updated Layout: Phone, Email, and Church on their own lines
+        // Layout: Phone, Email, and Church on their own lines
         li.innerHTML = `
             <div>
                 <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
-                <span style="font-size: 0.95em; color: #333; line-height: 1.6;">
+                <span style="font-size: 0.95em; color: #333; line-height: 1.7;">
                     <strong>Parent:</strong> ${data.parentName}<br>
                     <strong>Phone:</strong> ${data.phone}<br>
                     <strong>Email:</strong> ${data.email}<br>
