@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyB9wv (HIDDEN FOR PRIVACY)",
+    apiKey: "AIzaSyB9wvQ525wCsxZmIZmfzj6Z5VjF2aSUu_g",
     authDomain: "registervbs-83306.firebaseapp.com",
     projectId: "registervbs-83306",
     storageBucket: "registervbs-83306.firebasestorage.app",
@@ -14,19 +14,16 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 let currentRoster = [];
 
-window.toggleMyPass = function() {
+// --- ATTACH TO WINDOW TO FIX CONSOLE ERRORS ---
+window.toggleMyPass = () => {
     const passInput = document.getElementById('passInput');
     const toggleBtn = document.getElementById('togglePass');
-    if (passInput.type === 'password') {
-        passInput.type = 'text';
-        toggleBtn.textContent = 'Hide';
-    } else {
-        passInput.type = 'password';
-        toggleBtn.textContent = 'Show';
-    }
+    const isPass = passInput.type === 'password';
+    passInput.type = isPass ? 'text' : 'password';
+    toggleBtn.textContent = isPass ? 'Hide' : 'Show';
 };
 
-window.adminLogin = async function() {
+window.adminLogin = async () => {
     const userInput = document.getElementById('passInput').value;
     const errDiv = document.getElementById('err');
     try {
@@ -38,34 +35,16 @@ window.adminLogin = async function() {
         } else {
             errDiv.textContent = "Incorrect Password.";
         }
-    } catch (e) { 
-        errDiv.textContent = "Login Error. Check database connection.";
-    }
+    } catch (e) { errDiv.textContent = "Login Error. Check connection."; }
 };
 
 async function fetchChildren() {
     try {
         const querySnapshot = await getDocs(collection(db, "registrations"));
         currentRoster = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        
         document.getElementById('countDisplay').textContent = currentRoster.length;
-        
-        // --- RESTORED FILTER LOGIC ---
-        const searchInput = document.getElementById('adminSearch');
-        if (searchInput) {
-            searchInput.oninput = (e) => {
-                const term = e.target.value.toLowerCase();
-                const filtered = currentRoster.filter(child => 
-                    child.firstName.toLowerCase().includes(term) || 
-                    child.lastName.toLowerCase().includes(term) ||
-                    child.parentName.toLowerCase().includes(term)
-                );
-                renderList(filtered);
-            };
-        }
-
         renderList(currentRoster);
-    } catch (e) { console.error("Fetch error:", e); }
+    } catch (e) { console.error(e); }
 }
 
 function renderList(list) {
@@ -73,10 +52,11 @@ function renderList(list) {
     explorerList.innerHTML = "";
     list.forEach(data => {
         const li = document.createElement('li');
+        // Layout: Phone, Email, and Church on separate lines
         li.innerHTML = `
             <div>
                 <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
-                <span style="font-size: 0.95em; color: #333; line-height: 1.7;">
+                <span style="font-size: 0.95em; color: #333; line-height: 1.6;">
                     <strong>Parent:</strong> ${data.parentName}<br>
                     <strong>Phone:</strong> ${data.phone}<br>
                     <strong>Email:</strong> ${data.email}<br>
@@ -92,7 +72,8 @@ function renderList(list) {
     });
 }
 
-window.downloadRoster = function() {
+window.downloadRoster = () => {
+    // CSV Header with space
     let csv = "Child,Grade,Parent,Phone,Email,Church,PickUp,Allergies,Special Notes\n";
     currentRoster.forEach(d => {
         csv += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.homeChurch}","${d.pickupNames}","${d.medicalNotes}","${d.specialNotes}"\n`;
@@ -106,7 +87,7 @@ window.downloadRoster = function() {
 };
 
 window.deleteEntry = async (id) => {
-    if (confirm("Delete this child's record?")) {
+    if (confirm("Delete child?")) {
         await deleteDoc(doc(db, "registrations", id));
         fetchChildren();
     }
