@@ -24,7 +24,7 @@ body {
 
 h1, h2 { color: #1e3c72; text-align: center; margin-bottom: 20px; }
 
-/* --- Admin Header Spacing Fix --- */
+/* --- Admin Header Fix (Flexbox) --- */
 .csv-btn-center {
     border-bottom: 2px solid #eee;
     padding-bottom: 20px;
@@ -32,7 +32,7 @@ h1, h2 { color: #1e3c72; text-align: center; margin-bottom: 20px; }
     display: flex;
     justify-content: space-between; 
     align-items: center;
-    gap: 25px; /* Ensures breathing room */
+    gap: 20px; /* Forced breathing room */
     width: 100%;
 }
 
