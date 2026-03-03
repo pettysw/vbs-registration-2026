@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyB9wvQ525wCsxZmIZmfzj6Z5VjF2aSUu_g",
+    apiKey: "AIzaSyB9wv (HIDDEN FOR PRIVACY)",
     authDomain: "registervbs-83306.firebaseapp.com",
     projectId: "registervbs-83306",
     storageBucket: "registervbs-83306.firebasestorage.app",
@@ -13,8 +13,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 let currentRoster = [];
-
-// --- ATTACH TO WINDOW TO FIX CONSOLE ERRORS ---
 
 window.toggleMyPass = function() {
     const passInput = document.getElementById('passInput');
@@ -42,7 +40,6 @@ window.adminLogin = async function() {
         }
     } catch (e) { 
         errDiv.textContent = "Login Error. Check database connection.";
-        console.error(e);
     }
 };
 
@@ -51,9 +48,22 @@ async function fetchChildren() {
         const querySnapshot = await getDocs(collection(db, "registrations"));
         currentRoster = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        // Corrected Count Logic
         document.getElementById('countDisplay').textContent = currentRoster.length;
         
+        // --- RESTORED FILTER LOGIC ---
+        const searchInput = document.getElementById('adminSearch');
+        if (searchInput) {
+            searchInput.oninput = (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = currentRoster.filter(child => 
+                    child.firstName.toLowerCase().includes(term) || 
+                    child.lastName.toLowerCase().includes(term) ||
+                    child.parentName.toLowerCase().includes(term)
+                );
+                renderList(filtered);
+            };
+        }
+
         renderList(currentRoster);
     } catch (e) { console.error("Fetch error:", e); }
 }
@@ -63,7 +73,6 @@ function renderList(list) {
     explorerList.innerHTML = "";
     list.forEach(data => {
         const li = document.createElement('li');
-        // Layout: Phone, Email, and Church on their own lines
         li.innerHTML = `
             <div>
                 <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
@@ -84,7 +93,6 @@ function renderList(list) {
 }
 
 window.downloadRoster = function() {
-    // CSV Header with space between "Special" and "Notes"
     let csv = "Child,Grade,Parent,Phone,Email,Church,PickUp,Allergies,Special Notes\n";
     currentRoster.forEach(d => {
         csv += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.homeChurch}","${d.pickupNames}","${d.medicalNotes}","${d.specialNotes}"\n`;
