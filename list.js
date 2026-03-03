@@ -1,11 +1,58 @@
-// ... (Firebase initialization remains the same) ...
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyB9wvQ525wCsxZmIZmfzj6Z5VjF2aSUu_g",
+    authDomain: "registervbs-83306.firebaseapp.com",
+    projectId: "registervbs-83306",
+    storageBucket: "registervbs-83306.firebasestorage.app",
+    messagingSenderId: "462529063270",
+    appId: "1:462529063270:web:40c1333dc7c450345300a7"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+let currentRoster = [];
+
+// --- FIXED TOGGLE & LOGIN FOR PC ---
+window.toggleMyPass = () => {
+    const passInput = document.getElementById('passInput');
+    const toggleBtn = document.getElementById('togglePass');
+    const isPass = passInput.type === 'password';
+    passInput.type = isPass ? 'text' : 'password';
+    toggleBtn.textContent = isPass ? 'Hide' : 'Show';
+};
+
+window.adminLogin = async () => {
+    const userInput = document.getElementById('passInput').value;
+    const errDiv = document.getElementById('err');
+    try {
+        const configSnap = await getDoc(doc(db, "config", "admin_settings"));
+        if (configSnap.exists() && userInput === configSnap.data().passcode) { 
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            fetchChildren();
+        } else {
+            errDiv.textContent = "Incorrect Password.";
+        }
+    } catch (e) { errDiv.textContent = "Login Error: " + e.message; }
+};
+
+async function fetchChildren() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "registrations"));
+        currentRoster = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        document.getElementById('countDisplay').textContent = currentRoster.length;
+        renderList(currentRoster);
+    } catch (e) { console.error(e); }
+}
 
 function renderList(list) {
     const explorerList = document.getElementById('explorerList');
     explorerList.innerHTML = "";
     list.forEach(data => {
         const li = document.createElement('li');
-        // Layout with specific line breaks for parent info and church
+        // Updated Layout: Phone, Email, and Church on their own lines
         li.innerHTML = `
             <div>
                 <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
@@ -19,7 +66,7 @@ function renderList(list) {
                     <strong>Home Church:</strong> ${data.homeChurch || 'None'}
                 </span>
             </div>
-            <button onclick="window.deleteEntry('${data.id}')" style="background:#e74c3c; width: auto; padding: 8px 15px; font-size: 13px; margin-top:15px; color:white;">Delete</button>
+            <button onclick="window.deleteEntry('${data.id}')" class="delete-btn">Delete</button>
         `;
         explorerList.appendChild(li);
     });
@@ -39,4 +86,9 @@ window.downloadRoster = () => {
     a.click();
 };
 
-// ... (Rest of fetch and delete functions) ...
+window.deleteEntry = async (id) => {
+    if (confirm("Delete this child's record?")) {
+        await deleteDoc(doc(db, "registrations", id));
+        fetchChildren();
+    }
+};
