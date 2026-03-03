@@ -14,108 +14,83 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 let currentRoster = [];
 
-document.addEventListener('DOMContentLoaded', () => {
-    // --- SHOW PASSWORD TOGGLE ---
-    const toggleBtn = document.getElementById('togglePass');
-    const passInput = document.getElementById('passInput');
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            const isPass = passInput.type === 'password';
-            passInput.type = isPass ? 'text' : 'password';
-            toggleBtn.textContent = isPass ? 'Hide' : 'Show';
-        });
-    }
+// Functions for the buttons
+window.toggleMyPass = () => {
+    const p = document.getElementById('passInput');
+    const b = document.getElementById('togglePass');
+    p.type = (p.type === 'password') ? 'text' : 'password';
+    b.textContent = (p.type === 'password') ? 'Show' : 'Hide';
+};
 
-    // --- LOGIN LOGIC ---
-    const loginBtn = document.getElementById('loginBtn');
-    if (loginBtn) {
-        loginBtn.addEventListener('click', async () => {
-            const userInput = passInput.value;
-            const errDiv = document.getElementById('err');
-            try {
-                const configSnap = await getDoc(doc(db, "config", "admin_settings"));
-                if (configSnap.exists() && userInput === configSnap.data().passcode) { 
-                    document.getElementById('loginOverlay').style.display = 'none';
-                    document.getElementById('adminContent').style.display = 'block';
-                    fetchChildren();
-                } else {
-                    errDiv.textContent = "Incorrect Password.";
-                }
-            } catch (e) { errDiv.textContent = "Login Error. Check connection."; }
-        });
-    }
-
-    // --- SEARCH FILTER LOGIC ---
-    const searchInput = document.getElementById('adminSearch');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            const filtered = currentRoster.filter(child => 
-                child.firstName.toLowerCase().includes(term) || 
-                child.lastName.toLowerCase().includes(term) ||
-                child.parentName.toLowerCase().includes(term)
-            );
-            renderList(filtered);
-        });
-    }
-
-    // --- DOWNLOAD CSV ---
-    const downloadBtn = document.getElementById('downloadCSV');
-    if (downloadBtn) {
-        downloadBtn.addEventListener('click', () => {
-            let csv = "Child,Grade,Parent,Phone,Email,Church,PickUp,Allergies,Special Notes\n";
-            currentRoster.forEach(d => {
-                csv += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.homeChurch}","${d.pickupNames}","${d.medicalNotes}","${d.specialNotes}"\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', 'VBS_Roster_2026.csv');
-            a.click();
-        });
-    }
-});
-
-async function fetchChildren() {
+window.adminLogin = async () => {
+    const pass = document.getElementById('passInput').value;
     try {
-        const querySnapshot = await getDocs(collection(db, "registrations"));
-        currentRoster = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        document.getElementById('countDisplay').textContent = currentRoster.length;
-        renderList(currentRoster);
-    } catch (e) { console.error(e); }
+        const snap = await getDoc(doc(db, "config", "admin_settings"));
+        if (snap.exists() && pass === snap.data().passcode) {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            fetchRoster();
+        } else { document.getElementById('err').textContent = "Wrong passcode."; }
+    } catch (e) { document.getElementById('err').textContent = "Error."; }
+};
+
+async function fetchRoster() {
+    const snap = await getDocs(collection(db, "registrations"));
+    currentRoster = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    document.getElementById('countDisplay').textContent = currentRoster.length;
+    
+    // ATTACH FILTER LOGIC
+    document.getElementById('adminSearch').oninput = (e) => {
+        const val = e.target.value.toLowerCase();
+        const filtered = currentRoster.filter(c => 
+            c.firstName.toLowerCase().includes(val) || 
+            c.lastName.toLowerCase().includes(val)
+        );
+        render(filtered);
+    };
+    render(currentRoster);
 }
 
-function renderList(list) {
-    const explorerList = document.getElementById('explorerList');
-    explorerList.innerHTML = "";
-    list.forEach(data => {
+function render(list) {
+    const listDiv = document.getElementById('explorerList');
+    listDiv.innerHTML = "";
+    list.forEach(d => {
         const li = document.createElement('li');
         li.innerHTML = `
             <div>
-                <strong>${data.lastName}, ${data.firstName}</strong> (Grade: ${data.grade})<br>
-                <span style="font-size: 0.95em; color: #333; line-height: 1.6;">
-                    <strong>Parent:</strong> ${data.parentName}<br>
-                    <strong>Phone:</strong> ${data.phone}<br>
-                    <strong>Email:</strong> ${data.email}<br>
-                    <strong>Pick-up:</strong> ${data.pickupNames || 'N/A'}<br>
-                    <strong>Allergies:</strong> ${data.medicalNotes || 'None'}<br>
-                    <strong>Special Notes:</strong> ${data.specialNotes || 'None'}<br>
-                    <strong>Home Church:</strong> ${data.homeChurch || 'None'}
+                <strong>${d.lastName}, ${d.firstName}</strong> (Grade: ${d.grade})<br>
+                <span style="font-size:0.95em; color:#333; line-height:1.7;">
+                    <strong>Parent:</strong> ${d.parentName}<br>
+                    <strong>Phone:</strong> ${d.phone}<br>
+                    <strong>Email:</strong> ${d.email}<br>
+                    <strong>Pick-up:</strong> ${d.pickupNames || 'N/A'}<br>
+                    <strong>Allergies:</strong> ${d.medicalNotes || 'None'}<br>
+                    <strong>Special Notes:</strong> ${d.specialNotes || 'None'}<br>
+                    <strong>Home Church:</strong> ${d.homeChurch || 'None'}
                 </span>
             </div>
-            <button class="delete-btn" data-id="${data.id}">Delete</button>
+            <button onclick="window.del('${d.id}')" class="delete-btn">Delete</button>
         `;
-        explorerList.appendChild(li);
-    });
-
-    // Delete Event Delegation
-    explorerList.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            if (confirm("Delete child?")) {
-                await deleteDoc(doc(db, "registrations", e.target.dataset.id));
-                fetchChildren();
-            }
-        });
+        listDiv.appendChild(li);
     });
 }
+
+window.downloadRoster = () => {
+    let csv = "Child,Grade,Parent,Phone,Email,Church,PickUp,Allergies,Special Notes\n";
+    currentRoster.forEach(d => {
+        csv += `"${d.firstName} ${d.lastName}","${d.grade}","${d.parentName}","${d.phone}","${d.email}","${d.homeChurch}","${d.pickupNames}","${d.medicalNotes}","${d.specialNotes}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'VBS_Roster_2026.csv';
+    a.click();
+};
+
+window.del = async (id) => {
+    if (confirm("Delete child?")) {
+        await deleteDoc(doc(db, "registrations", id));
+        fetchRoster();
+    }
+};
