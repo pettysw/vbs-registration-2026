@@ -3,34 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VBS Admin - Cody 2026</title>
+    <title>VBS 2026 Admin Roster</title>
     <link rel="icon" type="image/png" href="ico.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="loginOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-        <img src="ico.png" style="width:100px; margin-bottom:20px;">
-        <h2>Admin Login</h2>
-        <input type="password" id="passInput" placeholder="Enter Password" style="padding:10px; border:2px solid #3498db; border-radius:5px;">
-        <div style="margin:10px 0;">
-            <input type="checkbox" id="showPass"> Show Password
+    <div id="loginOverlay">
+        <div class="container" style="text-align: center; margin-top: 50px;">
+            <h1>Admin Login</h1>
+            <p>Enter the passcode to view the child roster.</p>
+            
+            <div class="pass-wrapper">
+                <input type="password" id="passInput" placeholder="Enter Password">
+                <button id="togglePass" onclick="window.toggleMyPass()" style="width: auto; background-color: #7f8c8d;">Show</button>
+            </div>
+            
+            <div id="err" style="color: #e74c3c; margin: 10px 0; font-weight: bold;"></div>
+            
+            <button id="loginBtn" onclick="window.adminLogin()" style="width: 200px; margin: 20px auto; display: block;">Login</button>
         </div>
-        <button id="loginBtn" style="padding:10px 20px; background:#3498db; color:white; border:none; border-radius:5px; cursor:pointer;">Login</button>
-        <p id="err" style="color:red; margin-top:10px;"></p>
     </div>
 
-    <div id="adminContent" class="container" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-            <h1>VBS 2026 Roster</h1>
-            <div style="text-align:right;">
-                <button id="downloadBtn" style="padding:10px 15px; background:#27ae60; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; margin-right:10px;">Download Roster</button>
-                <strong>Total Children: </strong><span id="totalCount">0</span>
+    <div id="adminContent" style="display: none;">
+        <div class="container" style="max-width: 800px;">
+            <div class="csv-btn-center">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <h2 style="white-space: nowrap; margin: 0;">VBS 2026 Roster</h2>
+                    <button id="downloadCSV" onclick="window.downloadRoster()" style="width: auto; background-color: #27ae60; padding: 10px 20px;">Download Roster</button>
+                    <span style="font-weight: bold; color: #1e3c72;">Total Children: <span id="countDisplay">0</span></span>
+                </div>
             </div>
+
+            <div class="form-group">
+                <input type="text" id="adminSearch" placeholder="Search by child or parent name..." style="border-radius: 25px; padding: 10px 20px; border: 2px solid #1e3c72;">
+            </div>
+
+            <ul id="explorerList" style="padding: 0;">
+                <p id="loadingMsg" style="text-align: center; color: #666;">Loading registrations...</p>
+            </ul>
         </div>
-        <hr>
-        <ul id="explorerList" style="padding:0; list-style:none;">
-            <li id="loading">Loading registrations...</li>
-        </ul>
     </div>
 
     <script type="module" src="list.js"></script>
