@@ -17,29 +17,26 @@ body {
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    max-width: 900px; /* Slightly wider for the header layout */
+    max-width: 900px; 
     width: 100%;
     box-sizing: border-box;
 }
 
-/* --- FIXED ADMIN HEADER SPACING --- */
+h1, h2 { color: #1e3c72; text-align: center; margin-bottom: 20px; }
+
+/* --- Admin Header Spacing Fix --- */
 .csv-btn-center {
     border-bottom: 2px solid #eee;
     padding-bottom: 20px;
     margin-bottom: 30px;
     display: flex;
-    justify-content: space-between; /* Pushes Title/Button/Count apart */
+    justify-content: space-between; 
     align-items: center;
-    gap: 25px; /* Forced breathing room between elements */
+    gap: 25px; /* Ensures breathing room */
     width: 100%;
 }
 
-h2 {
-    color: #1e3c72;
-    margin: 0;
-    white-space: nowrap;
-    font-size: 24px;
-}
+h2 { margin: 0; white-space: nowrap; font-size: 24px; }
 
 #downloadCSV {
     background-color: #27ae60;
@@ -50,17 +47,12 @@ h2 {
     font-weight: bold;
     cursor: pointer;
     white-space: nowrap;
-    flex-shrink: 0; /* Prevents button from squishing */
+    flex-shrink: 0; 
 }
 
-#countParent {
-    font-weight: bold;
-    color: #1e3c72;
-    white-space: nowrap;
-    text-align: right;
-}
+#countParent { font-weight: bold; color: #1e3c72; white-space: nowrap; }
 
-/* --- SEARCH BAR --- */
+/* --- Search Bar & Roster Cards --- */
 #adminSearch {
     width: 100%;
     margin-bottom: 25px;
@@ -72,36 +64,28 @@ h2 {
     outline: none;
 }
 
-/* --- ROSTER CARDS --- */
 #explorerList { padding: 0; list-style: none; }
 
 #explorerList li {
     background: #f4f7f9;
-    margin: 0 0 15px 15px; /* 15px Left Margin for cards */
+    margin: 0 0 15px 15px; /* 15px Left Margin */
     padding: 20px;
     border-radius: 8px;
     border-left: 6px solid #1e3c72;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* --- LOGIN SCREEN --- */
-#loginBtn { 
-    width: 250px; 
-    margin: 25px auto; 
-    display: block; 
-    padding: 15px;
-    background-color: #f39c12;
-    color: white;
-    font-size: 18px;
-    border-radius: 6px;
-    border: none;
-    font-weight: bold;
+/* --- Form Elements --- */
+.form-group { margin-bottom: 18px; display: flex; flex-direction: column; }
+label { font-weight: bold; margin-bottom: 6px; color: #2c3e50; }
+input, select, textarea { padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+input:focus { border-color: #f39c12; outline: none; }
+
+button {
+    width: 100%; padding: 15px; background-color: #f39c12; color: white;
+    border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer;
 }
 
+#loginBtn { width: 250px; margin: 25px auto; display: block; }
 .pass-wrapper { display: flex; gap: 10px; justify-content: center; margin: 25px 0; }
-
-#passInput { padding: 12px; border: 2px solid #ddd; border-radius: 6px; width: 220px; }
-
-#togglePass { width: auto; background-color: #7f8c8d; padding: 0 15px; color: white; border: none; border-radius: 6px; }
-
-.delete-btn { background: #e74c3c; color: white; padding: 8px 15px; border: none; border-radius: 4px; margin-top: 15px; cursor: pointer; }
+#togglePass { width: auto; background-color: #7f8c8d; padding: 0 15px; color: white; border-radius: 6px; border: none; }
+.delete-btn { background: #e74c3c; color: white; padding: 8px 15px; border: none; border-radius: 4px; margin-top: 15px; }
