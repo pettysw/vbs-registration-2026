@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Roster</title>
+    <title>VBS Admin Roster</title>
     <link rel="icon" type="image/png" href="ico.png">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,11 +11,12 @@
     <div id="loginOverlay">
         <div class="container" style="text-align: center;">
             <h1>Admin Login</h1>
+            <p>Enter the passcode to view the child roster.</p>
             <div class="pass-wrapper">
                 <input type="password" id="passInput" placeholder="Password">
                 <button id="togglePass" onclick="window.toggleMyPass()">Show</button>
             </div>
-            <div id="err" style="color:red; margin:10px;"></div>
+            <div id="err" style="color:#e74c3c; margin:10px; font-weight:bold;"></div>
             <button id="loginBtn" onclick="window.adminLogin()">Login</button>
         </div>
     </div>
@@ -27,7 +28,7 @@
                 <button onclick="window.downloadRoster()" id="downloadCSV">Download Roster</button>
                 <span style="font-weight:bold;">Total Children: <span id="countDisplay">0</span></span>
             </div>
-            <input type="text" id="adminSearch" placeholder="Search children...">
+            <input type="text" id="adminSearch" placeholder="Search by name...">
             <ul id="explorerList"></ul>
         </div>
     </div>
