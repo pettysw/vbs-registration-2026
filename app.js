@@ -1,4 +1,17 @@
-// ... (Firebase initialization same as above) ...
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyB9wvQ525wCsxZmIZmfzj6Z5VjF2aSUu_g",
+    authDomain: "registervbs-83306.firebaseapp.com",
+    projectId: "registervbs-83306",
+    storageBucket: "registervbs-83306.firebasestorage.app",
+    messagingSenderId: "462529063270",
+    appId: "1:462529063270:web:40c1333dc7c450345300a7"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 document.getElementById('registrationForm').onsubmit = async (e) => {
     e.preventDefault();
@@ -18,11 +31,12 @@ document.getElementById('registrationForm').onsubmit = async (e) => {
             pickupNames: document.getElementById('pickupNames').value,
             medicalNotes: document.getElementById('medicalNotes').value,
             specialNotes: document.getElementById('specialNotes').value,
-            timestamp: new Date()
+            timestamp: serverTimestamp()
         });
+        // Redirect to success page on your domain
         window.location.href = "success.html";
     } catch (error) {
-        alert("Error: " + error.message);
+        alert("Registration Error: " + error.message);
         btn.disabled = false;
         btn.textContent = "Register Child";
     }
