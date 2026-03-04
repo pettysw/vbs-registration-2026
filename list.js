@@ -14,7 +14,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 let currentRoster = [];
 
-// Explicitly attach functions to window to prevent console errors
+// Attach to window to fix "not a function" console errors
 window.toggleMyPass = () => {
     const p = document.getElementById('passInput');
     const b = document.getElementById('togglePass');
