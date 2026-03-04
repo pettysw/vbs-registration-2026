@@ -17,15 +17,15 @@ body {
     padding: 40px; 
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    /* FORCE WIDTH FIX */
+    /* WIDTH FIX FOR PC */
     width: 95vw;          
-    max-width: 1100px;    
+    max-width: 950px;    
     box-sizing: border-box;
 }
 
 h1, h2 { color: #1e3c72; text-align: center; margin-bottom: 25px; }
 
-/* --- ADMIN LOGIN: SMALLER SHOW BUTTON --- */
+/* --- ADMIN LOGIN: COMPACT SHOW BUTTON --- */
 .pass-wrapper { 
     display: flex; 
     gap: 8px; 
@@ -38,15 +38,15 @@ h1, h2 { color: #1e3c72; text-align: center; margin-bottom: 25px; }
     padding: 12px; 
     border: 2px solid #ddd; 
     border-radius: 6px; 
-    width: 250px; 
+    width: 220px; 
     font-size: 16px;
 }
 
 #togglePass { 
     width: auto; 
     background-color: #7f8c8d; 
-    padding: 0 12px;       /* Reduced width padding */
-    font-size: 13px;       /* Shrunk font size */
+    padding: 0 10px;       /* Compact padding */
+    font-size: 12px;       /* Small font */
     color: white; 
     border-radius: 6px; 
     border: none; 
@@ -55,10 +55,10 @@ h1, h2 { color: #1e3c72; text-align: center; margin-bottom: 25px; }
 }
 
 #loginBtn { 
-    width: 280px; 
+    width: 220px; 
     margin: 25px auto; 
     display: block; 
-    padding: 15px; 
+    padding: 14px; 
     background: #f39c12; 
     color: white; 
     border: none; 
@@ -92,7 +92,7 @@ h1, h2 { color: #1e3c72; text-align: center; margin-bottom: 25px; }
     width: auto;            
 }
 
-/* --- ROSTER CARDS & SEARCH --- */
+/* --- ROSTER CARDS & SHRUNK DELETE BUTTON --- */
 #adminSearch {
     width: 100%;
     margin-bottom: 30px;
@@ -111,15 +111,19 @@ h1, h2 { color: #1e3c72; text-align: center; margin-bottom: 25px; }
     border-left: 10px solid #1e3c72; 
 }
 
+/* FIXED SMALL DELETE BUTTON */
 .delete-btn { 
     background: #e74c3c; 
     color: white; 
-    padding: 4px 10px; 
+    padding: 4px 10px;      /* Reduced size */
     border: none; 
     border-radius: 4px; 
-    font-size: 11px; 
+    font-size: 11px;        /* Small font */
     cursor: pointer;
     margin-top: 15px;
+    font-weight: bold;
+    width: auto;            /* Prevents full width */
+    display: inline-block;
 }
 
 /* --- REGISTRATION FORM --- */
