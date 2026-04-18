@@ -31,9 +31,9 @@ document.getElementById('registrationForm').onsubmit = async (e) => {
             pickupNames: document.getElementById('pickupNames').value,
             medicalNotes: document.getElementById('medicalNotes').value,
             specialNotes: document.getElementById('specialNotes').value,
+            tshirtSize: document.getElementById('tshirtSize').value, // SAVES THE T-SHIRT SIZE
             timestamp: serverTimestamp()
         });
-        // Redirect to success page on your domain
         window.location.href = "success.html";
     } catch (error) {
         alert("Registration Error: " + error.message);
